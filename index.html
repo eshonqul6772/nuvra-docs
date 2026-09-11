@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>nuvra — Word-style document editor for Vue 3</title>
+    <meta
+      name="description"
+      content="nuvra is a Word-style document editor for Vue 3: real pages, tables, images, find and replace, printing and Word export. Vue is its only dependency."
+    />
+    <script>
+      // Applies the saved or preferred colour scheme before the first paint, so a dark page never flashes white.
+      (() => {
+        try {
+          const saved = localStorage.getItem('nuvra-docs:theme');
+          const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.classList.toggle('dark', dark);
+        } catch {
+          // Storage can be unavailable; the light scheme applies.
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

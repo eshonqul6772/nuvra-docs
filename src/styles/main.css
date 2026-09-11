@@ -1,0 +1,227 @@
+/*
+ * Site foundation: design tokens (warm paper tones in light mode, ink tones in dark mode), base typography and the
+ * shared buttons. Only site elements are styled here, so the nuvra editor keeps its own look.
+ */
+
+:root {
+  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Newsreader Variable", Newsreader, Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --color-bg: #f7f5f0;
+  --color-bg-elevated: #fff;
+  --color-bg-muted: #efece5;
+  --color-code-bg: #fdfcfa;
+  --color-text: #1d1b17;
+  --color-text-soft: #57534b;
+  --color-text-faint: #8a857a;
+  --color-text-inverse: #fff;
+  --color-border: #e4dfd5;
+  --color-border-strong: #d3ccbf;
+  --color-accent: #6b4dff;
+  --color-accent-strong: #5433e8;
+  --color-accent-soft: #ece8ff;
+  --color-teal: #0e9f8e;
+  --gradient-brand: linear-gradient(115deg, #6b4dff 0%, #b04dff 48%, #14b8a6 100%);
+
+  --shadow-sm: 0 1px 2px rgb(29 27 23 / 6%);
+  --shadow-lg: 0 28px 64px -28px rgb(29 27 23 / 30%), 0 2px 6px rgb(29 27 23 / 5%);
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --header-height: 64px;
+
+  color-scheme: light;
+}
+
+:root.dark {
+  --color-bg: #0f0f14;
+  --color-bg-elevated: #17171f;
+  --color-bg-muted: #1d1d27;
+  --color-code-bg: #13131a;
+  --color-text: #eeede8;
+  --color-text-soft: #b3b1a8;
+  --color-text-faint: #7f7d76;
+  --color-text-inverse: #0f0f14;
+  --color-border: #2a2a35;
+  --color-border-strong: #3a3a47;
+  --color-accent: #9b85ff;
+  --color-accent-strong: #b3a3ff;
+  --color-accent-soft: #231e3d;
+  --color-teal: #2dd4bf;
+  --gradient-brand: linear-gradient(115deg, #a28dff 0%, #d38bff 48%, #2dd4bf 100%);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-lg: 0 28px 64px -28px rgb(0 0 0 / 75%), 0 2px 6px rgb(0 0 0 / 30%);
+
+  color-scheme: dark;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + 16px);
+}
+
+body {
+  margin: 0;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-feature-settings: "cv11", "ss01";
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1 0 auto;
+}
+
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-inline: 16px;
+  }
+}
+
+a:focus-visible,
+.button:focus-visible,
+.icon-button:focus-visible,
+.segmented__option:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Kicker above section titles. */
+.eyebrow {
+  margin: 0;
+  color: var(--color-accent-strong);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+/* Pill buttons and links styled as buttons. */
+.button {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 24px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button--primary {
+  color: var(--color-text-inverse);
+  background: var(--color-text);
+  box-shadow: 0 10px 28px -12px color-mix(in srgb, var(--color-accent) 70%, transparent);
+}
+
+.button--primary:hover {
+  box-shadow: 0 14px 34px -12px color-mix(in srgb, var(--color-accent) 85%, transparent);
+}
+
+.button--ghost {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-bg-elevated) 65%, transparent);
+}
+
+.button--ghost:hover {
+  border-color: var(--color-text-faint);
+}
+
+/* Square icon buttons in the header. */
+.icon-button {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  color: var(--color-text-soft);
+  background: transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease;
+}
+
+.icon-button:hover {
+  color: var(--color-text);
+  background: var(--color-bg-muted);
+}
+
+/* Segmented control (language switch, demo tabs). */
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-muted);
+}
+
+.segmented__option {
+  height: 30px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--color-text-soft);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.segmented__option:hover {
+  color: var(--color-text);
+}
+
+.segmented__option.is-active {
+  color: var(--color-text);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
