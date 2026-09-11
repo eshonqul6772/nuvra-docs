@@ -24,6 +24,7 @@ The tables use Windows and Linux keys. On macOS use `⌘` instead of `Ctrl` and 
 | `Ctrl+E` | Inline code |
 | `Ctrl+,` | Subscript |
 | `Ctrl+.` | Superscript |
+| `Ctrl+Shift+H` | Highlight |
 
 With a collapsed caret, a formatting shortcut applies to the text you type next.
 

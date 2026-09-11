@@ -6,10 +6,10 @@ The editor's colors come from CSS custom properties. Override them to match your
 
 All variables are declared on the `.document-editor` element, the root of every editor. Menus, popovers and floating toolbars are rendered inside that element, so they use the same values.
 
-Because the defaults are declared on `.document-editor` itself, setting a variable on an ancestor such as `body` has no effect. Override it on the editor element, with a rule loaded after `nuvra/style.css` or with a more specific selector:
+The defaults have zero specificity (they are declared with `:where()` since nuvra 0.2.1), so any rule that targets `.document-editor` overrides them, whatever order the stylesheets load in. Set variables on the editor element itself: values on an ancestor such as `body` do not apply, because the editor declares its own.
 
 ```css
-.app .document-editor {
+.document-editor {
   --nuvra-color-primary: #7c3aed;
   --nuvra-color-primary-hover: #8b5cf6;
   --nuvra-color-primary-border: #c4b5fd;
@@ -78,7 +78,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 document.documentElement.classList.toggle('dark', prefersDark);
 ```
 
-You can override dark values the same way as light ones, for example with `.dark .document-editor`. A plain `.document-editor` rule loaded after `nuvra/style.css` overrides the variable in both palettes.
+A plain `.document-editor` rule overrides a variable in both palettes. To change only the dark value, target `.dark .document-editor` (or `[data-theme="dark"] .document-editor`).
 
 ## Following an Element Plus theme
 

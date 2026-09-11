@@ -6,10 +6,10 @@ Muharrir ranglari CSS o‘zgaruvchilaridan olinadi. Ularni dizayningizga moslab 
 
 Barcha o‘zgaruvchilar har bir muharrirning ildiz elementi — `.document-editor` da e’lon qilingan. Menyular, popoverlar va suzuvchi panellar shu element ichida chiziladi, shuning uchun ular ham xuddi shu qiymatlardan foydalanadi.
 
-Standart qiymatlar `.document-editor` ning o‘zida e’lon qilingani uchun o‘zgaruvchini `body` kabi ota elementda belgilash natija bermaydi. Uni muharrir elementining o‘zida, `nuvra/style.css` dan keyin yuklanadigan qoida yoki aniqroq selektor bilan qayta belgilang:
+Standart qiymatlarning aniqlik darajasi (specificity) nolga teng — nuvra 0.2.1 dan boshlab ular `:where()` bilan e’lon qilinadi. Shuning uchun `.document-editor` ga qaratilgan har qanday qoida uslub fayllari qaysi tartibda yuklanishidan qat’i nazar ularni almashtiradi. O‘zgaruvchilarni muharrir elementining o‘zida belgilang: `body` kabi ota elementdagi qiymatlar ishlamaydi, chunki muharrir o‘z qiymatlarini e’lon qiladi.
 
 ```css
-.app .document-editor {
+.document-editor {
   --nuvra-color-primary: #7c3aed;
   --nuvra-color-primary-hover: #8b5cf6;
   --nuvra-color-primary-border: #c4b5fd;
@@ -78,7 +78,7 @@ const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 document.documentElement.classList.toggle('dark', prefersDark);
 ```
 
-Qorong‘i qiymatlarni ham yorug‘ qiymatlar kabi qayta belgilash mumkin, masalan `.dark .document-editor` selektori bilan. `nuvra/style.css` dan keyin yuklanadigan oddiy `.document-editor` qoidasi o‘zgaruvchini ikkala palitrada ham almashtiradi.
+Oddiy `.document-editor` qoidasi o‘zgaruvchini ikkala palitrada ham almashtiradi. Faqat qorong‘i qiymatni o‘zgartirish uchun `.dark .document-editor` (yoki `[data-theme="dark"] .document-editor`) selektoridan foydalaning.
 
 ## Element Plus mavzusiga moslash
 

@@ -24,6 +24,7 @@ Jadvallarda Windows va Linux tugmalari ko‘rsatilgan. macOS’da `Ctrl` o‘rni
 | `Ctrl+E` | Satr ichidagi kod |
 | `Ctrl+,` | Pastki indeks |
 | `Ctrl+.` | Yuqori indeks |
+| `Ctrl+Shift+H` | Belgilash rangi |
 
 Hech narsa belgilanmagan bo‘lsa, format keyin yoziladigan matnga qo‘llanadi.
 
