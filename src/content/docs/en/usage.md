@@ -68,6 +68,47 @@ Users change the settings in the page setup popover of the toolbar. Margins are 
 
 The same settings are used by printing and by HTML and Word export.
 
+## Headers and footers
+
+The header and footer button of the toolbar edits the running text at the top and at the bottom of every page; each has a left, a centre and a right part. Both are stored in the page settings as `header` and `footer`, so `v-model:page` saves and restores them with the rest of the setup.
+
+| Token | Becomes |
+| --- | --- |
+| `{page}` | Number of the current page |
+| `{pages}` | Number of pages in the document |
+| `{date}` | Today's date (dd.mm.yyyy) |
+| `{title}` | Document title from the `title` prop |
+
+- In the page view the running texts are drawn in the margins of every sheet, with the tokens resolved for that page. A footer replaces the editor's own page indicator.
+- Printing and HTML export lay the document out in sheets exactly as the editor does, so the page numbers and page breaks on paper match the screen.
+- The Word export turns them into Word's own header and footer, and `{page}` and `{pages}` into the Word fields PAGE and NUMPAGES, so the numbers stay correct after the document is edited in Word.
+- Exported from the web view the document is not split into sheets: the running texts are still repeated on every printed page, but `{page}` stays empty.
+
+## Watermark
+
+Typing a text into the "Watermark" section of the page setup (for example `DRAFT` or `COPY`) draws it faintly behind the text of every page. Its colour can be picked, and the "Diagonal" switch lays the text across the page at an angle.
+
+- The text is scaled to span the paper and drawn at 16% opacity, so it never gets in the way of reading.
+- It is stored in the page settings as `watermark`, so `v-model:page` saves and restores it with the rest of the setup.
+- Printing and HTML export repeat it on every sheet; the Word export writes it in Word's own watermark form (a VML shape inside the header).
+- Clearing the text removes the watermark from the settings again.
+
+## Ruler
+
+The page view carries a ruler above the sheet: it is measured in centimetres, separates the text area from the margins and offers five markers to drag.
+
+| Marker | Changes |
+| --- | --- |
+| Triangle on top | First line indent of the paragraph (`text-indent`) |
+| Left triangle below | Left indent of the paragraph (`margin-left`) |
+| Right triangle below | Right indent of the paragraph (`margin-right`) |
+| Left bar in the middle | Left page margin |
+| Right bar in the middle | Right page margin |
+
+- Values snap to whole millimetres and are applied when the pointer is released, so one drag is one undo step.
+- The indent markers act on the paragraph at the caret (or on the selected paragraphs); the margin markers change the margins in `v-model:page`.
+- `:ruler="false"` hides the ruler from the start; users switch it with the "Ruler" entry of the "More" menu. The web view and the form field never show it.
+
 ## Views
 
 The editor has two views, switched from the status bar:
@@ -82,6 +123,18 @@ The editor has two views, switched from the status bar:
   <DocumentEditor v-model="html" default-view-mode="web" />
 </template>
 ```
+
+## Formatting tools
+
+The toolbar carries the tools office editors are used for:
+
+- **Format painter** picks up the formatting at the caret (font, size, color, highlight, bold and italic, block type, alignment, line spacing and indentation) and paints it onto the text selected next, or onto the paragraph that is clicked. `Escape` drops it.
+- **Letter case** (Aa) turns the selected text into UPPERCASE, lowercase, Title Case or sentence case, and toggles the case of every character.
+- **The font size field** accepts a size that is not in the list (1–400 pt); the A↑ and A↓ buttons next to it step through the list.
+- **Paragraph spacing** is added from the line spacing menu: 12 pt before or after the paragraph. It is stored in the document HTML as the `data-space-before` and `data-space-after` attributes together with a `margin`, and the spacing of paragraphs pasted from Word or Google Docs is converted into the same form.
+- **Formatting marks** are switched on from the "More" menu and draw a pilcrow at the end of every paragraph. They are painted by the editor only: the document HTML, printing and export never contain them.
+- **The context menu** opens on a right click and follows what was clicked: cut, copy and paste, link actions, table rows and columns, deleting an image, clearing formatting and selecting everything.
+- **Zoom** follows `Ctrl` (`⌘` on macOS) with the mouse wheel.
 
 ## Sizing
 

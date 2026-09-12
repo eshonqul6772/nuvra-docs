@@ -83,7 +83,9 @@ Drag across cells with the mouse to select a rectangle of cells.
 | `Enter` | In the replace field: replace the current match |
 | `Ctrl+K` | Insert or edit a link |
 | `Ctrl+P` | Print |
-| `Escape` | Close the open menu or popover, the find bar, or leave fullscreen |
+| `Ctrl+` mouse wheel | Zoom the document in or out |
+| `Right click` | Open the context menu for what is under the pointer |
+| `Escape` | Close the open menu or popover, the find bar, drop the format painter, or leave fullscreen |
 
 ## Markdown-like input rules
 

@@ -83,7 +83,9 @@ To‘rtburchak shaklidagi kataklarni belgilash uchun sichqoncha bilan kataklar u
 | `Enter` | Almashtirish maydonida: joriy moslikni almashtirish |
 | `Ctrl+K` | Havola qo‘shish yoki tahrirlash |
 | `Ctrl+P` | Chop etish |
-| `Escape` | Ochiq menyu yoki popoverni, qidiruv panelini yopish yoki to‘liq ekrandan chiqish |
+| `Ctrl+` sichqoncha g‘ildiragi | Masshtabni kattalashtirish yoki kichraytirish |
+| `O‘ng tugma` | Bosilgan joyga mos kontekst menyusini ochish |
+| `Escape` | Ochiq menyu yoki popoverni, qidiruv panelini yopish, format bo‘yoqchasini bekor qilish yoki to‘liq ekrandan chiqish |
 
 ## Markdown uslubidagi qoidalar
 

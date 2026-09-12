@@ -68,6 +68,47 @@ Foydalanuvchi sozlamalarni asboblar panelidagi “Sahifa sozlamalari” oynasida
 
 Chop etish, HTML va Word eksporti ham shu sozlamalardan foydalanadi.
 
+## Kolontitullar
+
+Asboblar panelidagi kolontitul tugmasi yuqori va pastki kolontitulni sozlaydi; har birida chap, markaz va o‘ng qism bor. Matnlar sahifa sozlamalari ichida `header` va `footer` sifatida saqlanadi, ya’ni ular ham `v-model:page` orqali saqlanadi va tiklanadi.
+
+| Token | Natija |
+| --- | --- |
+| `{page}` | Joriy sahifa raqami |
+| `{pages}` | Hujjatdagi sahifalar soni |
+| `{date}` | Bugungi sana (kk.oo.yyyy) |
+| `{title}` | `title` propidagi hujjat nomi |
+
+- Sahifa ko‘rinishida kolontitullar har bir varaqning hoshiyasida ko‘rinadi, tokenlar esa o‘sha sahifa uchun hisoblanadi. Pastki kolontitul qo‘yilganda muharrirning o‘z sahifa raqami ko‘rsatkichi yashiriladi.
+- Chop etish va HTML eksportida hujjat muharrirdagidek varaqlarga bo‘linadi, shuning uchun sahifa raqamlari va sahifa uzilishlari ekrandagi bilan bir xil chiqadi.
+- Word eksportida kolontitullar Word’ning o‘z kolontitullariga, `{page}` va `{pages}` esa Word maydonlariga (PAGE va NUMPAGES) aylanadi, shuning uchun hujjat Word’da tahrirlangandan keyin ham raqamlar to‘g‘ri qoladi.
+- Veb ko‘rinishda eksport qilinsa, hujjat varaqlarga bo‘linmaydi: kolontitullar chop etishda har sahifada takrorlanadi, lekin `{page}` bo‘sh qoladi.
+
+## Suv belgisi
+
+“Sahifa sozlamalari” oynasidagi “Suv belgisi” bo‘limiga matn yozilsa (masalan `NUSXA` yoki `CHERNOVIK`), u har bir sahifada matn ortida xira ko‘rinadi. Rangi tanlanadi, “Qiya” belgisi esa matnni burchak bo‘ylab joylashtiradi.
+
+- Matn qog‘ozga sig‘adigan qilib avtomatik kattalashtiriladi va 16% shaffoflik bilan chiziladi, shuning uchun o‘qishga xalaqit bermaydi.
+- Sozlama sahifa sozlamalari ichida `watermark` sifatida saqlanadi, ya’ni `v-model:page` orqali saqlanadi va tiklanadi.
+- Chop etish va HTML eksportida har bir varaqda takrorlanadi. Word eksportida esa Word’ning o‘z suv belgisi formatida (VML shakli sifatida kolontitul ichida) yoziladi.
+- Matn o‘chirilsa, suv belgisi sozlamalardan butunlay olib tashlanadi.
+
+## Chizg‘ich
+
+Sahifa ko‘rinishida varaq ustida chizg‘ich turadi: u santimetrlarda o‘lchangan, matn maydonini hoshiyalardan ajratib ko‘rsatadi va beshta markerni sudrashga imkon beradi.
+
+| Marker | Nimani o‘zgartiradi |
+| --- | --- |
+| Yuqoridagi uchburchak | Paragrafning birinchi qator chekinishi (`text-indent`) |
+| Pastdagi chap uchburchak | Paragrafning chap chekinishi (`margin-left`) |
+| Pastdagi o‘ng uchburchak | Paragrafning o‘ng chekinishi (`margin-right`) |
+| O‘rtadagi chap chiziqcha | Sahifaning chap hoshiyasi |
+| O‘rtadagi o‘ng chiziqcha | Sahifaning o‘ng hoshiyasi |
+
+- Qiymatlar millimetrga yaxlitlanadi va sudrash tugagach qo‘llanadi, shuning uchun bitta sudrash bitta bekor qilish qadami bo‘ladi.
+- Chekinish markerlari kursor turgan (yoki belgilangan) paragraflarga ta’sir qiladi, hoshiya markerlari esa `v-model:page` dagi hoshiyalarni o‘zgartiradi.
+- `:ruler="false"` chizg‘ichni boshidanoq yashiradi; foydalanuvchi uni “Yana” menyusidagi “Chizg‘ich” bandi bilan yoqib-o‘chiradi. Veb ko‘rinishda va forma maydonida chizg‘ich ko‘rsatilmaydi.
+
 ## Ko‘rinishlar
 
 Muharrirda ikki ko‘rinish bor, ular holat panelidan almashtiriladi:
@@ -82,6 +123,18 @@ Muharrirda ikki ko‘rinish bor, ular holat panelidan almashtiriladi:
   <DocumentEditor v-model="html" default-view-mode="web" />
 </template>
 ```
+
+## Formatlash vositalari
+
+Asboblar panelida ofis muharrirlaridagi vositalar bor:
+
+- **Format bo‘yoqchasi** kursor turgan joydagi formatni oladi (shrift, o‘lcham, rang, belgilash, qalin/kursiv, sarlavha turi, tekislash, qator oralig‘i va chekinish), so‘ng uni sichqoncha bilan belgilangan matnga yoki bosilgan paragrafga qo‘llaydi. `Escape` bekor qiladi.
+- **Harf registri** (Aa) belgilangan matnni BOSH HARFLAR, kichik harflar, Har So‘z Bosh Harf yoki gap boshi bosh harf ko‘rinishiga o‘tkazadi hamda registrni almashtiradi.
+- **Shrift o‘lchami maydoni** ro‘yxatda yo‘q o‘lchamni (1–400 pt) qo‘lda yozishga imkon beradi; yonidagi A↑ va A↓ tugmalari o‘lchamni ro‘yxat bo‘yicha oshiradi yoki kamaytiradi.
+- **Paragraf oralig‘i** “Qator oralig‘i” menyusidan qo‘shiladi: paragraf oldidan yoki keyin 12 pt bo‘sh joy. Oraliq hujjat HTML’ida `data-space-before` va `data-space-after` atributlari hamda `margin` sifatida saqlanadi, Word yoki Google Docs’dan ko‘chirilgan paragraflarning oralig‘i ham shu ko‘rinishga o‘tadi.
+- **Formatlash belgilari** “Yana” menyusidan yoqiladi va har bir paragraf oxirida ¶ belgisini ko‘rsatadi. Belgilar faqat ekranda chiziladi: hujjat HTML’iga, chop etishga va eksportga tushmaydi.
+- **Kontekst menyusi** hujjatda o‘ng tugma bosilganda ochiladi va bosilgan joyga moslashadi: kesish, nusxalash, joylashtirish, havola amallari, jadval qator va ustunlari, rasmni o‘chirish, formatni tozalash, barchasini tanlash.
+- **Masshtab** `Ctrl` (macOS’da `⌘`) bilan sichqoncha g‘ildiragini aylantirganda o‘zgaradi.
 
 ## O‘lchamlar
 
