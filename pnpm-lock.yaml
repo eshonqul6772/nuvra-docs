@@ -18,8 +18,8 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       nuvra:
-        specifier: ^0.5.0
-        version: 0.5.0(vue@3.5.42(typescript@6.0.3))
+        specifier: ^0.6.0
+        version: 0.6.0(vue@3.5.42(typescript@6.0.3))
       vue:
         specifier: ^3.5.41
         version: 3.5.42(typescript@6.0.3)
@@ -717,8 +717,8 @@ packages:
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0, npm: '>= 10'}
     hasBin: true
 
-  nuvra@0.5.0:
-    resolution: {integrity: sha512-algTZHpxg++3YmrZli49f/L2I1kUHAXdE35fKOx3bVVOSrx8T2pR4HvJWdOHb7WiB/am2EqtORyTG8pR/FG1Lw==}
+  nuvra@0.6.0:
+    resolution: {integrity: sha512-tuXW5bAQ+CibcBzY7zBCpRsRjG7jxZKasyS+uLD3miLK2Z19vlvQQZlTJ5gWi89Y3JeQiaEuhYDDNSF3dkk2fQ==}
     engines: {node: ^22.18.0 || >=24.12.0}
     peerDependencies:
       vue: ^3.5.0
@@ -1602,7 +1602,7 @@ snapshots:
       shell-quote: 1.10.0
       which: 7.0.0
 
-  nuvra@0.5.0(vue@3.5.42(typescript@6.0.3)):
+  nuvra@0.6.0(vue@3.5.42(typescript@6.0.3)):
     dependencies:
       vue: 3.5.42(typescript@6.0.3)
 
