@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { DocumentEditor, Editor, type PageSettings, createPageSettings } from 'nuvra';
+import { reactive, ref, watch } from 'vue';
+import {
+  DocumentEditor,
+  Editor,
+  type EditorLocaleCode,
+  type PageSettings,
+  createPageSettings,
+  editorLocales
+} from 'nuvra';
 
 import { locale, messages } from '../i18n';
 import { en } from '../i18n/messages/en';
@@ -26,6 +33,11 @@ const page = ref<PageSettings>(createPageSettings());
 /** Sample document per language, so each keeps its own edits when the language changes. */
 const documents = reactive({ en: en.demo.sample, uz: uz.demo.sample });
 const description = ref('');
+/** Interface language of the editors; it follows the site language until the visitor picks another one. */
+const editorLocale = ref<EditorLocaleCode>(locale.value);
+watch(locale, value => {
+  editorLocale.value = value;
+});
 </script>
 
 <template>
@@ -51,6 +63,22 @@ const description = ref('');
           @click="tab = 'field'"
         >
           {{ messages.demo.fieldTab }}
+        </button>
+      </div>
+
+      <div class="segmented" role="radiogroup" :aria-label="messages.demo.editorLanguage">
+        <button
+          v-for="option in editorLocales"
+          :key="option.code"
+          type="button"
+          role="radio"
+          class="segmented__option"
+          :class="{ 'is-active': editorLocale === option.code }"
+          :aria-checked="editorLocale === option.code"
+          :title="option.name"
+          @click="editorLocale = option.code"
+        >
+          {{ option.code.toUpperCase() }}
         </button>
       </div>
 
@@ -81,7 +109,7 @@ const description = ref('');
       </div>
 
       <div v-if="tab === 'document'" class="demo__body demo__body--document">
-        <DocumentEditor v-model="documents[locale]" v-model:page="page" :height="640" :title="messages.demo.fileName" />
+        <DocumentEditor v-model="documents[locale]" v-model:page="page" :height="640" :locale="editorLocale" :title="messages.demo.fileName" />
       </div>
 
       <form v-else class="demo__body demo__form" @submit.prevent>
@@ -91,7 +119,7 @@ const description = ref('');
         </label>
         <div class="demo__field">
           <span>{{ messages.demo.descriptionLabel }}</span>
-          <Editor v-model="description" :max-length="500" :placeholder="messages.demo.descriptionPlaceholder" />
+          <Editor v-model="description" :locale="editorLocale" :max-length="500" :placeholder="messages.demo.descriptionPlaceholder" />
         </div>
         <p class="demo__hint">{{ messages.demo.fieldHint }}</p>
       </form>

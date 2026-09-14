@@ -22,7 +22,7 @@ export const DOCS_NAV: DocsGroup[] = [
     pages: [
       { slug: 'getting-started', title: { en: 'Getting started', uz: 'Boshlash' } },
       { slug: 'usage', title: { en: 'Usage', uz: 'Foydalanish' } },
-      { slug: 'translations', title: { en: 'Translations', uz: 'Tarjimalar' } },
+      { slug: 'translations', title: { en: 'Languages', uz: 'Tillar' } },
       { slug: 'theming', title: { en: 'Theming', uz: 'Ranglar va mavzu' } }
     ]
   },

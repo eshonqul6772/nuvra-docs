@@ -9,12 +9,16 @@ import {
   DocumentEditor,
   Editor,
   createPageSettings,
-  editorMessages,
-  setEditorTranslator,
+  editorLocales,
+  en,
+  ru,
+  setEditorLocale,
+  uz,
   type DocumentImageUploadHandler,
   type DocumentViewMode,
-  type EditorLabelKey,
-  type EditorTranslator,
+  type EditorLocale,
+  type EditorLocaleCode,
+  type EditorLocaleInput,
   type PageMargins,
   type PageOrientation,
   type PageSettings,
@@ -36,6 +40,7 @@ The full Word-style editor with toolbar, page or web view, status bar, find and 
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | View shown first; the user can switch it in the status bar. |
 | `disabled` | `boolean` | `false` | Makes the document read-only and disables every editing control. |
 | `height` | `number \| string` | `760` | Height of the whole editor, or `'auto'` to grow with the content between `minHeight` and `maxHeight`. |
+| `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `en`, `ru` or their codes; defaults to the app-wide language. |
 | `maxHeight` | `number \| string` | `600` | Largest height of an auto-height editor; longer documents scroll inside it. |
 | `maxImageSizeMb` | `number` | `10` | Largest accepted image file, in megabytes. |
 | `maxLength` | `number` | `0` | Largest number of characters; `0` means unlimited. |
@@ -85,6 +90,7 @@ A rich text field for forms: `DocumentEditor` in the web view with `height: 'aut
 | `autofocus` | `boolean` | `false` | Places the caret at the end of the content once the editor is ready. |
 | `canvasPadding` | `number \| string` | `50` | Gray space around the sheet. |
 | `disabled` | `boolean` | `false` | Makes the content read-only and disables the toolbar. |
+| `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `en`, `ru` or their codes; defaults to the app-wide language. |
 | `maxHeight` | `number \| string` | `600` | Height at which the field stops growing and starts scrolling. |
 | `maxImageSizeMb` | `number` | `10` | Largest accepted image file, in megabytes. |
 | `maxLength` | `number` | `0` | Character limit; `0` means unlimited. |
@@ -113,23 +119,33 @@ function createPageSettings(): PageSettings;
 
 Returns new default page settings: A4, portrait, margins of 25.4 mm on every side. Each call returns a new object.
 
-### setEditorTranslator
+### setEditorLocale
 
 ```ts
-function setEditorTranslator(next?: EditorTranslator): void;
+function setEditorLocale(locale: EditorLocaleInput): void;
 ```
 
-Registers the translator used for every editor label on the page. The translator returns a string for a translated label or `undefined` to keep the built-in Uzbek text. Calling it without arguments restores the built-in texts. See [Translations](/docs/translations).
+Sets the interface language of every editor without its own `locale` prop. Reactive: editors already on the page switch right away. See [Languages](/docs/translations).
 
 ## Constants
 
-### editorMessages
+### uz, en, ru
 
 ```ts
-const editorMessages: Readonly<Record<EditorLabelKey, string>>;
+const uz: EditorLocale;
+const en: EditorLocale;
+const ru: EditorLocale;
 ```
 
-Every label key with its built-in Uzbek text. `{name}` marks a placeholder that is filled in at translation time.
+The built-in interface languages: Uzbek (the default), English and Russian.
+
+### editorLocales
+
+```ts
+const editorLocales: ReadonlyArray<EditorLocale>;
+```
+
+Every built-in locale, for language pickers.
 
 ## Types
 
@@ -184,18 +200,26 @@ type DocumentViewMode = 'page' | 'web';
 type DocumentImageUploadHandler = (file: File) => Promise<string>;
 ```
 
-### EditorTranslator
+### EditorLocale
 
 ```ts
-/** Translates an editor label; returning `undefined` keeps the built-in text. */
-type EditorTranslator = (key: EditorLabelKey, named?: Record<string, unknown>) => string | undefined;
+interface EditorLocale {
+  /** Language code. */
+  readonly code: EditorLocaleCode;
+  /** Name of the language in that language, for language pickers. */
+  readonly name: string;
+}
 ```
 
-### EditorLabelKey
+### EditorLocaleCode
 
 ```ts
-/** Union of every label key, such as 'editor.bold' or 'editor.table.insert'. */
-type EditorLabelKey = keyof typeof editorMessages;
+type EditorLocaleCode = 'uz' | 'en' | 'ru';
 ```
 
-The full list of keys is on the [Translations](/docs/translations#all-label-keys) page.
+### EditorLocaleInput
+
+```ts
+/** A locale object, or just its code. */
+type EditorLocaleInput = EditorLocale | EditorLocaleCode;
+```

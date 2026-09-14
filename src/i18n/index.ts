@@ -1,7 +1,5 @@
 import { computed, ref, watchEffect } from 'vue';
-import { setEditorTranslator } from 'nuvra';
 
-import { EDITOR_LABELS_EN } from './editor-labels-en';
 import { en } from './messages/en';
 import { uz } from './messages/uz';
 
@@ -16,8 +14,6 @@ export const LOCALES: ReadonlyArray<{ value: Locale; label: string }> = [
 
 const STORAGE_KEY = 'nuvra-docs:locale';
 const MESSAGES = { en, uz };
-/** `{name}` placeholders inside editor labels. */
-const PLACEHOLDER = /\{(\w+)\}/g;
 
 /** The saved language, or Uzbek for Uzbek browsers and English otherwise. */
 const readInitialLocale = (): Locale => {
@@ -49,11 +45,3 @@ watchEffect(() => {
     // The choice only lasts for this visit when storage is unavailable.
   }
 });
-
-// The demo editors follow the site language: English labels in English, nuvra's built-in Uzbek otherwise. Labels read
-// `locale`, so the editors re-render when it changes.
-setEditorTranslator((key, named) =>
-  locale.value === 'en'
-    ? EDITOR_LABELS_EN[key].replace(PLACEHOLDER, (_, name: string) => String(named?.[name] ?? ''))
-    : undefined
-);

@@ -34,6 +34,7 @@ export const uz: SiteMessages = {
     documentTab: 'Hujjat',
     fieldTab: 'Forma maydoni',
     accent: 'Rang',
+    editorLanguage: 'Muharrir tili',
     fileName: 'Xizmat ko‘rsatish shartnomasi',
     fieldTitle: 'Yangi rol',
     nameLabel: 'Rol nomi',

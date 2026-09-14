@@ -9,12 +9,16 @@ import {
   DocumentEditor,
   Editor,
   createPageSettings,
-  editorMessages,
-  setEditorTranslator,
+  editorLocales,
+  en,
+  ru,
+  setEditorLocale,
+  uz,
   type DocumentImageUploadHandler,
   type DocumentViewMode,
-  type EditorLabelKey,
-  type EditorTranslator,
+  type EditorLocale,
+  type EditorLocaleCode,
+  type EditorLocaleInput,
   type PageMargins,
   type PageOrientation,
   type PageSettings,
@@ -36,6 +40,7 @@ Asboblar paneli, sahifa yoki veb ko‘rinishi, holat paneli, qidirish va almasht
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | Birinchi ko‘rsatiladigan ko‘rinish; foydalanuvchi uni holat panelida almashtira oladi. |
 | `disabled` | `boolean` | `false` | Hujjatni faqat o‘qiladigan qiladi va barcha tahrirlash tugmalarini o‘chiradi. |
 | `height` | `number \| string` | `760` | Butun muharrir balandligi yoki `minHeight` va `maxHeight` oralig‘ida o‘sishi uchun `'auto'`. |
+| `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |
 | `maxHeight` | `number \| string` | `600` | O‘suvchi muharrirning eng katta balandligi; uzun hujjatlar ichida aylantiriladi. |
 | `maxImageSizeMb` | `number` | `10` | Qabul qilinadigan rasm faylining eng katta hajmi, megabaytda. |
 | `maxLength` | `number` | `0` | Belgilarning eng ko‘p soni; `0` — cheklovsiz. |
@@ -85,6 +90,7 @@ Formalar uchun matn maydoni: veb ko‘rinishdagi va `height: 'auto'` bo‘lgan `
 | `autofocus` | `boolean` | `false` | Muharrir tayyor bo‘lganda kursorni matn oxiriga qo‘yadi. |
 | `canvasPadding` | `number \| string` | `50` | Varaq atrofidagi kulrang bo‘shliq. |
 | `disabled` | `boolean` | `false` | Matnni faqat o‘qiladigan qiladi va asboblar panelini o‘chiradi. |
+| `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |
 | `maxHeight` | `number \| string` | `600` | Maydon o‘sishdan to‘xtab, aylantirila boshlaydigan balandlik. |
 | `maxImageSizeMb` | `number` | `10` | Qabul qilinadigan rasm faylining eng katta hajmi, megabaytda. |
 | `maxLength` | `number` | `0` | Belgilar chegarasi; `0` — cheklovsiz. |
@@ -113,23 +119,33 @@ function createPageSettings(): PageSettings;
 
 Yangi standart sahifa sozlamalarini qaytaradi: A4, kitob yo‘nalishi, har tomondan 25.4 mm hoshiya. Har bir chaqiruv yangi obyekt qaytaradi.
 
-### setEditorTranslator
+### setEditorLocale
 
 ```ts
-function setEditorTranslator(next?: EditorTranslator): void;
+function setEditorLocale(locale: EditorLocaleInput): void;
 ```
 
-Sahifadagi barcha muharrir yorliqlari uchun tarjimonni ro‘yxatdan o‘tkazadi. Tarjimon tarjima qilingan yorliq uchun satr yoki o‘rnatilgan o‘zbekcha matnni qoldirish uchun `undefined` qaytaradi. Argumentsiz chaqirilsa, o‘rnatilgan matnlar tiklanadi. Batafsil: [Tarjimalar](/docs/translations).
+O‘z `locale` propi berilmagan barcha muharrirlarning interfeys tilini o‘rnatadi. Reaktiv: sahifadagi muharrirlar darhol yangilanadi. Batafsil: [Tillar](/docs/translations).
 
 ## Konstantalar
 
-### editorMessages
+### uz, en, ru
 
 ```ts
-const editorMessages: Readonly<Record<EditorLabelKey, string>>;
+const uz: EditorLocale;
+const en: EditorLocale;
+const ru: EditorLocale;
 ```
 
-Har bir yorliq kaliti va uning o‘rnatilgan o‘zbekcha matni. `{name}` tarjima vaqtida to‘ldiriladigan o‘rin to‘ldiruvchini bildiradi.
+O‘rnatilgan interfeys tillari: o‘zbek (standart), ingliz va rus.
+
+### editorLocales
+
+```ts
+const editorLocales: ReadonlyArray<EditorLocale>;
+```
+
+Barcha o‘rnatilgan tillar, til tanlash ro‘yxatlari uchun.
 
 ## Tiplar
 
@@ -184,18 +200,26 @@ type DocumentViewMode = 'page' | 'web';
 type DocumentImageUploadHandler = (file: File) => Promise<string>;
 ```
 
-### EditorTranslator
+### EditorLocale
 
 ```ts
-/** Muharrir yorlig‘ini tarjima qiladi; `undefined` qaytarilsa o‘rnatilgan matn qoladi. */
-type EditorTranslator = (key: EditorLabelKey, named?: Record<string, unknown>) => string | undefined;
+interface EditorLocale {
+  /** Til kodi. */
+  readonly code: EditorLocaleCode;
+  /** Tilning o‘z tilidagi nomi, til tanlash ro‘yxatlari uchun. */
+  readonly name: string;
+}
 ```
 
-### EditorLabelKey
+### EditorLocaleCode
 
 ```ts
-/** Barcha yorliq kalitlarining birlashmasi, masalan 'editor.bold' yoki 'editor.table.insert'. */
-type EditorLabelKey = keyof typeof editorMessages;
+type EditorLocaleCode = 'uz' | 'en' | 'ru';
 ```
 
-Kalitlarning to‘liq ro‘yxati [Tarjimalar](/docs/translations#barcha-yorliq-kalitlari) sahifasida.
+### EditorLocaleInput
+
+```ts
+/** Til obyekti yoki uning kodi. */
+type EditorLocaleInput = EditorLocale | EditorLocaleCode;
+```

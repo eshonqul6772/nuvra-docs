@@ -73,7 +73,7 @@ Bo‘sh maydonning qiymati `''` bo‘ladi, shuning uchun odatiy “majburiy mayd
 ## Keyingi qadamlar
 
 - [Foydalanish](/docs/usage) — sahifa sozlamalari, ko‘rinishlar, o‘lchamlar, rasmlar, chop etish va eksport.
-- [Tarjimalar](/docs/translations) — interfeysni o‘z tilingizda ko‘rsatish.
+- [Tillar](/docs/translations) — interfeysni o‘zbek, ingliz yoki rus tilida ko‘rsatish.
 - [Ranglar va mavzu](/docs/theming) — ranglarni o‘zgartirish va qorong‘i mavzuni yoqish.
 - [API](/docs/api) — barcha props, hodisalar, metodlar va tiplar.
 - [Tezkor tugmalar](/docs/keyboard-shortcuts) — klaviatura buyruqlari va Markdown uslubidagi qoidalar.

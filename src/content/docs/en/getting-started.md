@@ -73,7 +73,7 @@ An empty field has the value `''`, so the usual “required” validation works 
 ## Next steps
 
 - [Usage](/docs/usage) — page settings, view modes, sizing, images, printing and export.
-- [Translations](/docs/translations) — show the interface in your language.
+- [Languages](/docs/translations) — show the interface in Uzbek, English or Russian.
 - [Theming](/docs/theming) — change colors and enable the dark palette.
 - [API](/docs/api) — every prop, event, method and type.
 - [Keyboard shortcuts](/docs/keyboard-shortcuts) — shortcuts and Markdown-like input rules.

@@ -32,6 +32,7 @@ export const en = {
     documentTab: 'Document',
     fieldTab: 'Form field',
     accent: 'Accent',
+    editorLanguage: 'Editor language',
     fileName: 'Service agreement',
     fieldTitle: 'New role',
     nameLabel: 'Role name',
