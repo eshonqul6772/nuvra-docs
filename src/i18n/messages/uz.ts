@@ -35,6 +35,18 @@ export const uz: SiteMessages = {
     fieldTab: 'Forma maydoni',
     accent: 'Rang',
     editorLanguage: 'Muharrir tili',
+    variables: [
+      { name: 'contract_number', label: 'Shartnoma raqami' },
+      { name: 'contract_date', label: 'Shartnoma sanasi' },
+      { name: 'client_name', label: 'Buyurtmachi' },
+      { name: 'client_director', label: 'Buyurtmachi rahbari' },
+      { name: 'total_amount', label: 'Umumiy summa' }
+    ],
+    author: 'Mehmon',
+    comment: {
+      author: 'Dilnoza Rahimova',
+      text: 'Hujjatlarni yuridik bo‘lim ham tasdiqlashi kerakmi? Istalgan matnni belgilab, “Izoh qo‘shish” tugmasi bilan o‘z fikringizni yozing.'
+    },
     fileName: 'Xizmat ko‘rsatish shartnomasi',
     fieldTitle: 'Yangi rol',
     nameLabel: 'Rol nomi',
@@ -44,11 +56,11 @@ export const uz: SiteMessages = {
     fieldHint: 'Veb ko‘rinishdagi o‘sha dvigatel: matn ko‘paygan sari kengayadi va istalgan formaga joylashadi.',
     sample: [
       '<h1>Xizmat ko‘rsatish shartnomasi</h1>',
-      '<p><strong>№ 24/09</strong> · Toshkent sh. · 2026-yil 11-sentabr</p>',
-      '<p>Ushbu shartnoma <strong>“Nuvra Studio” MChJ</strong> (keyingi o‘rinlarda “Ijrochi”) va <em>Buyurtmachi</em> (birgalikda “Tomonlar”) o‘rtasida tuzildi.</p>',
+      '<p><strong>№ <span data-variable="contract_number">{{contract_number}}</span></strong> · Toshkent sh. · <span data-variable="contract_date">{{contract_date}}</span></p>',
+      '<p>Ushbu shartnoma <strong>“Nuvra Studio” MChJ</strong> (keyingi o‘rinlarda “Ijrochi”) va <strong><span data-variable="client_name">{{client_name}}</span></strong> (keyingi o‘rinlarda “Buyurtmachi”, birgalikda “Tomonlar”) o‘rtasida tuzildi.</p>',
       '<h2>1. Ish hajmi</h2>',
       '<p>Ijrochi Buyurtmachi uchun hujjat aylanishi tizimini loyihalaydi va topshiradi:</p>',
-      '<ul><li><p>shartnoma va xatlar uchun shablonlar kutubxonasi;</p></li><li><p>rollar bo‘yicha ko‘rib chiqish va tasdiqlash;</p></li><li><p>Word va PDF formatlariga eksport.</p></li></ul>',
+      '<ul><li><p>shartnoma va xatlar uchun shablonlar kutubxonasi;</p></li><li><p><span data-comment="demo-comment">rollar bo‘yicha ko‘rib chiqish va tasdiqlash</span>;</p></li><li><p>Word va PDF formatlariga eksport.</p></li></ul>',
       '<h2>2. Muddatlar va to‘lov</h2>',
       '<table><tbody>',
       '<tr><th><p>Bosqich</p></th><th><p>Muddat</p></th><th><p>Summa</p></th></tr>',
@@ -56,8 +68,12 @@ export const uz: SiteMessages = {
       '<tr><td><p>Ishlab chiqish</p></td><td><p>15-noyabr</p></td><td><p>79 000 000 so‘m</p></td></tr>',
       '<tr><td><p>Ishga tushirish</p></td><td><p>1-dekabr</p></td><td><p>15 000 000 so‘m</p></td></tr>',
       '</tbody></table>',
-      '<blockquote><p>Maslahat: jadval katagini bossangiz, jadval paneli ochiladi; qidirish uchun Ctrl+F tugmalarini bosing.</p></blockquote>',
-      '<p>Tomonlar nomidan imzolandi.</p>'
+      '<blockquote><p>Maslahat: o‘zgaruvchini { } tugmasi bilan yoki {{total_amount}} deb yozib, imzo blokini esa ruchka tugmasi bilan qo‘shing.</p></blockquote>',
+      '<p>Tomonlar nomidan imzolandi.</p>',
+      '<table data-type="signature"><tbody><tr>',
+      '<td><p><strong>BUYURTMACHI:</strong></p><p><span data-variable="client_name">{{client_name}}</span></p><p>Direktor</p><p>________________ <span data-variable="client_director">{{client_director}}</span></p><p>M.O‘.</p></td>',
+      '<td><p><strong>IJROCHI:</strong></p><p>“Nuvra Studio” MChJ</p><p>Direktor</p><p>________________ A. Karimov</p><p>M.O‘.</p></td>',
+      '</tr></tbody></table>'
     ].join('')
   },
   features: {
@@ -83,11 +99,11 @@ export const uz: SiteMessages = {
       },
       {
         title: 'Chop etish va eksport',
-        text: 'Sahifa sozlamalari bilan chop eting yoki PDF saqlang, hujjatni HTML yoki Word (.doc) fayli sifatida yuklab oling.'
+        text: 'Sahifa sozlamalari bilan chop eting yoki PDF saqlang, hujjatni HTML yoki Word (.docx) fayli sifatida yuklab oling yoki .docx faylni oching.'
       },
       {
         title: 'Sizning tilingizda',
-        text: 'Har bir yozuv bitta tarjima funksiyasidan o‘tadi. O‘zbek tili ichida bor; vue-i18n yoki istalgan lug‘atni ulang.'
+        text: 'Interfeys o‘zbek (lotin va kirill), ingliz va rus tillarida keladi. Tilni har bir muharrir uchun yoki butun ilovaga bir marta tanlang.'
       },
       {
         title: 'Dizaynga to‘liq moslanadi',
@@ -113,7 +129,7 @@ export const uz: SiteMessages = {
   stats: [
     { value: '1', label: 'bog‘liqlik — Vue' },
     { value: '48 kB', label: 'siqilgan JavaScript' },
-    { value: '124', label: 'tarjima qilinadigan yozuv' },
+    { value: '229', label: 'tarjima qilinadigan yozuv' },
     { value: 'MIT', label: 'litsenziya, doim bepul' }
   ],
   footer: {

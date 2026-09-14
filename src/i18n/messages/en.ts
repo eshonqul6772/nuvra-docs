@@ -33,6 +33,18 @@ export const en = {
     fieldTab: 'Form field',
     accent: 'Accent',
     editorLanguage: 'Editor language',
+    variables: [
+      { name: 'contract_number', label: 'Contract number' },
+      { name: 'contract_date', label: 'Contract date' },
+      { name: 'client_name', label: 'Client' },
+      { name: 'client_director', label: 'Client’s director' },
+      { name: 'total_amount', label: 'Total amount' }
+    ],
+    author: 'Guest',
+    comment: {
+      author: 'Dilnoza Rahimova',
+      text: 'Should the legal department approve documents too? Select any text and press “Add comment” to leave your own note.'
+    },
     fileName: 'Service agreement',
     fieldTitle: 'New role',
     nameLabel: 'Role name',
@@ -42,11 +54,11 @@ export const en = {
     fieldHint: 'The same engine in the web view: it grows with its content and fits into any form.',
     sample: [
       '<h1>Service agreement</h1>',
-      '<p><strong>No. 24/09</strong> · Tashkent · 11 September 2026</p>',
-      '<p>This agreement is made between <strong>Nuvra Studio LLC</strong> (the “Contractor”) and <em>the Client</em>, together the “Parties”.</p>',
+      '<p><strong>No. <span data-variable="contract_number">{{contract_number}}</span></strong> · Tashkent · <span data-variable="contract_date">{{contract_date}}</span></p>',
+      '<p>This agreement is made between <strong>Nuvra Studio LLC</strong> (the “Contractor”) and <strong><span data-variable="client_name">{{client_name}}</span></strong> (the “Client”), together the “Parties”.</p>',
       '<h2>1. Scope of work</h2>',
       '<p>The Contractor designs and delivers a document workflow for the Client:</p>',
-      '<ul><li><p>a template library for contracts and letters;</p></li><li><p>role-based review and approval;</p></li><li><p>export to Word and PDF.</p></li></ul>',
+      '<ul><li><p>a template library for contracts and letters;</p></li><li><p><span data-comment="demo-comment">role-based review and approval</span>;</p></li><li><p>export to Word and PDF.</p></li></ul>',
       '<h2>2. Schedule and payment</h2>',
       '<table><tbody>',
       '<tr><th><p>Stage</p></th><th><p>Deadline</p></th><th><p>Amount</p></th></tr>',
@@ -54,8 +66,12 @@ export const en = {
       '<tr><td><p>Development</p></td><td><p>15 November</p></td><td><p>$6,800</p></td></tr>',
       '<tr><td><p>Launch</p></td><td><p>1 December</p></td><td><p>$1,300</p></td></tr>',
       '</tbody></table>',
-      '<blockquote><p>Tip: click a table cell to open the table toolbar, or press Ctrl+F to search.</p></blockquote>',
-      '<p>Signed on behalf of the Parties.</p>'
+      '<blockquote><p>Tip: insert variables with the { } button or by typing {{total_amount}}, and signature blocks with the pen button.</p></blockquote>',
+      '<p>Signed on behalf of the Parties.</p>',
+      '<table data-type="signature"><tbody><tr>',
+      '<td><p><strong>CLIENT:</strong></p><p><span data-variable="client_name">{{client_name}}</span></p><p>Director</p><p>________________ <span data-variable="client_director">{{client_director}}</span></p><p>Seal</p></td>',
+      '<td><p><strong>CONTRACTOR:</strong></p><p>Nuvra Studio LLC</p><p>Director</p><p>________________ A. Karimov</p><p>Seal</p></td>',
+      '</tr></tbody></table>'
     ].join('')
   },
   features: {
@@ -81,11 +97,11 @@ export const en = {
       },
       {
         title: 'Print & export',
-        text: 'Print or save as PDF with your page settings, or download the document as HTML or a Word .doc file.'
+        text: 'Print or save as PDF with your page settings, download the document as HTML or a Word .docx file, or open a .docx file.'
       },
       {
         title: 'Speaks your language',
-        text: 'Every label goes through one translator function. Uzbek is built in; plug in vue-i18n or any dictionary.'
+        text: 'The interface ships in Uzbek (Latin and Cyrillic), English and Russian. Pick one per editor or once for the whole app.'
       },
       {
         title: 'Themeable to the pixel',
@@ -111,7 +127,7 @@ export const en = {
   stats: [
     { value: '1', label: 'dependency — Vue' },
     { value: '48 kB', label: 'of gzipped JavaScript' },
-    { value: '124', label: 'translatable labels' },
+    { value: '229', label: 'translatable labels' },
     { value: 'MIT', label: 'licensed, free forever' }
   ],
   footer: {

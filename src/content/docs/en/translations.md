@@ -1,12 +1,15 @@
 # Languages
 
-The editor interface — toolbar, menus, dialogs, status bar and messages — ships in three languages: Uzbek, English and Russian. The translations are part of the package, so every app shows the same, reviewed texts.
+The editor interface — toolbar, menus, dialogs, status bar and messages — ships in Uzbek (Latin and Cyrillic), English and Russian. The translations are part of the package, so every app shows the same, reviewed texts.
 
-| Locale | Language |
-| --- | --- |
-| `uz` | O‘zbekcha (default) |
-| `en` | English |
-| `ru` | Русский |
+| Locale | Code | Language |
+| --- | --- | --- |
+| `uz` | `'uz'` | O‘zbekcha (default) |
+| `uzCyrl` | `'uz-Cyrl'` | Ўзбекча |
+| `en` | `'en'` | English |
+| `ru` | `'ru'` | Русский |
+
+The language also decides the texts the editor writes into the document: signature blocks, document templates, amounts in words and long dates.
 
 ## One editor
 

@@ -1,6 +1,6 @@
 # Foydalanish
 
-Bu sahifada `DocumentEditor` va `Editor` bilan kundalik ish tushuntiriladi: qiymat, sahifa sozlamalari, ko‘rinishlar, o‘lchamlar, rasmlar, chop etish va eksport. Barcha parametrlar ro‘yxati [API](/docs/api) sahifasida.
+Bu sahifada `DocumentEditor` va `Editor` bilan kundalik ish tushuntiriladi: qiymat, sahifa sozlamalari, ko‘rinishlar, `/` menyusi, o‘lchamlar, rasmlar, asboblar paneliga o‘z tugmalaringiz, chop etish va eksport. Barcha parametrlar ro‘yxati [API](/docs/api) sahifasida.
 
 ## Hujjat qiymati
 
@@ -83,6 +83,7 @@ Asboblar panelidagi kolontitul tugmasi yuqori va pastki kolontitulni sozlaydi; h
 - Chop etish va HTML eksportida hujjat muharrirdagidek varaqlarga bo‘linadi, shuning uchun sahifa raqamlari va sahifa uzilishlari ekrandagi bilan bir xil chiqadi.
 - Word eksportida kolontitullar Word’ning o‘z kolontitullariga, `{page}` va `{pages}` esa Word maydonlariga (PAGE va NUMPAGES) aylanadi, shuning uchun hujjat Word’da tahrirlangandan keyin ham raqamlar to‘g‘ri qoladi.
 - Veb ko‘rinishda eksport qilinsa, hujjat varaqlarga bo‘linmaydi: kolontitullar chop etishda har sahifada takrorlanadi, lekin `{page}` bo‘sh qoladi.
+- Shu oynada kolontitullarni birinchi sahifada yashirish va birinchi sahifa raqamini belgilash mumkin; batafsil: [Sahifa raqamlash](/docs/word-files#sahifa-raqamlash).
 
 ## Suv belgisi
 
@@ -135,6 +136,50 @@ Asboblar panelida ofis muharrirlaridagi vositalar bor:
 - **Formatlash belgilari** “Yana” menyusidan yoqiladi va har bir paragraf oxirida ¶ belgisini ko‘rsatadi. Belgilar faqat ekranda chiziladi: hujjat HTML’iga, chop etishga va eksportga tushmaydi.
 - **Kontekst menyusi** hujjatda o‘ng tugma bosilganda ochiladi va bosilgan joyga moslashadi: kesish, nusxalash, joylashtirish, havola amallari, jadval qator va ustunlari, rasmni o‘chirish, formatni tozalash, barchasini tanlash.
 - **Masshtab** `Ctrl` (macOS’da `⌘`) bilan sichqoncha g‘ildiragini aylantirganda o‘zgaradi.
+
+## / menyusi
+
+Qator boshida yoki probeldan keyin `/` yozilsa, kursor ostida buyruqlar ro‘yxati ochiladi: oddiy matn, 1–3-darajali sarlavhalar, belgili, raqamli va vazifalar ro‘yxati, iqtibos, kod bloki, jadval, gorizontal chiziq, sahifa uzilishi, snoska, mundarija, bugungi sananing qisqa va to‘liq shakli, imzo bloklari hamda `variables` dagi shablon o‘zgaruvchilari.
+
+- `/` dan keyin yozilgan harflar ro‘yxatni nomi va o‘zbek, rus, ingliz tillaridagi bir nechta kalit so‘z bo‘yicha filtrlaydi: `/jadval` jadvalni topadi.
+- `↑` va `↓` ro‘yxat bo‘ylab yuradi; `Enter`, `Tab` yoki sichqoncha bosilsa, buyruq bajariladi. Yozilgan `/filtr` avval o‘chiriladi.
+- `Escape` menyuni yopadi va kursordan oldingi matn o‘zgarmaguncha u yopiq qoladi.
+- Menyu kod bloki ichida, `disabled` muharrirda va HTML kod ko‘rinishida ochilmaydi. `Editor` da ham u bor.
+
+### O‘z buyruqlaringiz
+
+`slashCommands` ilovangiz buyruqlarini ro‘yxat boshiga qo‘shadi. `run` tahrirlash dvigatelini oladi:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor, type SlashCommand } from 'nuvra';
+
+const html = ref('');
+
+const slashCommands: SlashCommand[] = [
+  {
+    id: 'director',
+    label: 'Direktor ismi',
+    icon: 'pencil',
+    keywords: ['director', 'директор'],
+    run: engine => engine.insertText('A. Karimov')
+  },
+  {
+    id: 'approved',
+    label: 'Tasdiqlash grifi',
+    icon: 'signature',
+    run: engine => engine.insertContent('<p style="text-align: right"><strong>TASDIQLAYMAN</strong></p>', { asBlocks: true })
+  }
+];
+</script>
+
+<template>
+  <DocumentEditor v-model="html" :slash-commands="slashCommands" />
+</template>
+```
+
+`icon` — muharrir ikonkalaridan birining nomi (`IconName`); berilmasa, buyruq yonida plyus belgisi chiqadi. Eng foydali dvigatel metodlari [DocumentEngine](/docs/api#documentengine) bo‘limida.
 
 ## O‘lchamlar
 
@@ -232,12 +277,61 @@ const save = () => {
 | --- | --- |
 | `focus()` | Klaviatura fokusini hujjatga o‘tkazadi. |
 | `getHTML()` | Kutilayotgan o‘zgarishlarni modelga yozadi va hujjat HTML’ini qaytaradi. |
+| `insertVariable(name)` | Belgilangan joyga shablon o‘zgaruvchisini qo‘shadi. |
+| `updateTableOfContents()` | Mundarijani qo‘shadi yoki yangilaydi. |
+| `importWord(file)` | Hujjatni `.docx` fayl mazmuni bilan almashtiradi. |
 | `print()` | Hujjat uchun brauzerning chop etish oynasini ochadi. |
 | `exportHtml()` | Hujjatni mustaqil HTML sahifa sifatida yuklab beradi. |
-| `exportWord()` | Hujjatni Word bilan mos `.doc` fayl sifatida yuklab beradi. |
-| `engine` | Ichki tahrirlash dvigateli (muharrir yuklanmaguncha `null`), murakkab integratsiyalar uchun. |
+| `exportWord()` | Hujjatni Word fayli (`.docx`) sifatida yuklab beradi. |
+| `engine` | Tahrirlash dvigateli (muharrir yuklanmaguncha `null`), murakkab integratsiyalar uchun. |
 
 `Editor` bu metodlarni taqdim etmaydi.
+
+## Asboblar paneliga o‘z tugmalaringiz
+
+`toolbar` sloti ilovangiz tugmalarini asboblar panelining o‘ng guruhi boshiga joylaydi. U tahrirlash dvigateli `engine`, kursor turgan joydagi format `state` va hujjatni tahrirlab bo‘lmaganda `true` bo‘ladigan `disabled` ni oladi.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor } from 'nuvra';
+
+const html = ref('');
+
+const lookUp = (text: string) => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`);
+</script>
+
+<template>
+  <DocumentEditor v-model="html">
+    <template #toolbar="{ engine, state, disabled }">
+      <button
+        type="button"
+        class="doc-tb-button"
+        title="Qabul qilingan sanani qo‘yish"
+        :disabled="disabled"
+        @mousedown.prevent
+        @click="engine.insertText(`Qabul qilindi: ${new Date().toLocaleDateString()}`)"
+      >
+        Muhr
+      </button>
+      <button
+        type="button"
+        class="doc-tb-button"
+        title="Belgilangan matnni qidirish"
+        :disabled="!state.textSelected"
+        @mousedown.prevent
+        @click="lookUp(engine.getSelectedText())"
+      >
+        Qidirish
+      </button>
+    </template>
+  </DocumentEditor>
+</template>
+```
+
+- `@mousedown.prevent` tugma bosilganda hujjatdagi belgilashni saqlab qoladi — o‘rnatilgan tugmalar ham shunday ishlaydi.
+- `doc-tb-button` klassi tugmaga asboblar panelining o‘z tugmalari ko‘rinishini beradi; istalgan boshqa belgilash ham ishlaydi.
+- Dvigatel buyruqlari bekor qilinadigan qadam bo‘ladi va yozishdagidek `v-model` ni yangilaydi. `state` maydonlari [EditorUiState](/docs/api#editoruistate) bo‘limida.
 
 ## Chop etish va eksport
 
@@ -245,7 +339,7 @@ Chop etish, HTML va Word eksporti asboblar panelidagi “Yana” menyusida ham b
 
 - **Chop etish** hujjatni sahifa sozlamalaridagi o‘lcham va hoshiyalar bilan yashirin freymda chizadi, rasmlar yuklanishini kutadi va brauzerning chop etish oynasini ochadi. PDF olish uchun u yerda “PDF sifatida saqlash”ni tanlang.
 - **HTML eksport** hujjat stillari va sahifa o‘lchami bilan mustaqil HTML sahifani yuklab beradi.
-- **Word eksport** Word “chop etish” ko‘rinishida ochadigan `.doc` faylni yuklab beradi; sahifa uzilishlari Word sahifa uzilishlariga aylanadi.
+- **Word eksport** sahifa sozlamalari, kolontitullar va sahifa uzilishlari bilan haqiqiy Word faylini (`.docx`) yuklab beradi. Shu menyudagi “Word faylini ochish (.docx)” esa faylni muharrirga yuklaydi. Batafsil: [Word fayllari va katta hujjatlar](/docs/word-files).
 
 `title` prop chop etish sarlavhasi va fayl nomi sifatida ishlatiladi. U berilmasa, `editor.document` yorlig‘i olinadi. Fayl nomida ruxsat etilmagan belgilar almashtiriladi.
 

@@ -22,6 +22,9 @@ export const DOCS_NAV: DocsGroup[] = [
     pages: [
       { slug: 'getting-started', title: { en: 'Getting started', uz: 'Boshlash' } },
       { slug: 'usage', title: { en: 'Usage', uz: 'Foydalanish' } },
+      { slug: 'templates', title: { en: 'Templates and signatures', uz: 'Shablonlar va imzolar' } },
+      { slug: 'review', title: { en: 'Comments and comparison', uz: 'Izohlar va solishtirish' } },
+      { slug: 'word-files', title: { en: 'Word files and long documents', uz: 'Word fayllari va katta hujjatlar' } },
       { slug: 'translations', title: { en: 'Languages', uz: 'Tillar' } },
       { slug: 'theming', title: { en: 'Theming', uz: 'Ranglar va mavzu' } }
     ]
@@ -31,7 +34,8 @@ export const DOCS_NAV: DocsGroup[] = [
     pages: [
       { slug: 'api', title: { en: 'API', uz: 'API' } },
       { slug: 'keyboard-shortcuts', title: { en: 'Keyboard shortcuts', uz: 'Tezkor tugmalar' } },
-      { slug: 'browser-support', title: { en: 'Browser support', uz: 'Brauzerlarni qo‘llab-quvvatlash' } }
+      { slug: 'browser-support', title: { en: 'Browser support', uz: 'Brauzerlarni qo‘llab-quvvatlash' } },
+      { slug: 'changelog', title: { en: 'Changelog', uz: 'O‘zgarishlar tarixi' } }
     ]
   }
 ];

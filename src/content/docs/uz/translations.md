@@ -1,12 +1,15 @@
 # Tillar
 
-Muharrir interfeysi — asboblar paneli, menyular, oynalar, holat paneli va xabarlar — uch tilda tayyor: o‘zbek, ingliz va rus. Tarjimalar paketning ichida, shuning uchun har bir ilova bir xil, tekshirilgan matnlarni ko‘rsatadi.
+Muharrir interfeysi — asboblar paneli, menyular, oynalar, holat paneli va xabarlar — o‘zbek (lotin va kirill), ingliz va rus tillarida tayyor. Tarjimalar paketning ichida, shuning uchun har bir ilova bir xil, tekshirilgan matnlarni ko‘rsatadi.
 
-| Locale | Til |
-| --- | --- |
-| `uz` | O‘zbekcha (standart) |
-| `en` | English |
-| `ru` | Русский |
+| Locale | Kod | Til |
+| --- | --- | --- |
+| `uz` | `'uz'` | O‘zbekcha (standart) |
+| `uzCyrl` | `'uz-Cyrl'` | Ўзбекча |
+| `en` | `'en'` | English |
+| `ru` | `'ru'` | Русский |
+
+Til muharrir hujjatga yozadigan matnlarni ham belgilaydi: imzo bloklari, hujjat shablonlari, so‘z bilan yozilgan summalar va to‘liq sanalar.
 
 ## Bitta muharrir
 

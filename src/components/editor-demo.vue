@@ -10,7 +10,7 @@ import {
 } from 'nuvra';
 
 import { locale, messages } from '../i18n';
-import { en } from '../i18n/messages/en';
+import { type SiteMessages, en } from '../i18n/messages/en';
 import { uz } from '../i18n/messages/uz';
 
 /** Live nuvra editors: a full document in the page view, and the same engine as a form field. */
@@ -32,6 +32,17 @@ const accent = ref<string>(ACCENTS[0].value);
 const page = ref<PageSettings>(createPageSettings());
 /** Sample document per language, so each keeps its own edits when the language changes. */
 const documents = reactive({ en: en.demo.sample, uz: uz.demo.sample });
+/**
+ * The sample comment, anchored in the sample document as `<span data-comment="demo-comment">`. It has the shape of
+ * nuvra's `DocumentComment`, which the published package the site type-checks against does not export yet.
+ */
+const sampleComments = (site: SiteMessages) => [
+  { id: 'demo-comment', createdAt: '2026-09-14T09:30:00.000Z', replies: [], ...site.demo.comment }
+];
+/** Comments per language, next to the document they belong to. */
+const comments = reactive({ en: sampleComments(en), uz: sampleComments(uz) });
+/** Tracked changes start off; visitors switch them on with the toolbar button. */
+const trackChanges = ref(false);
 const description = ref('');
 /** Interface language of the editors; it follows the site language until the visitor picks another one. */
 const editorLocale = ref<EditorLocaleCode>(locale.value);
@@ -105,11 +116,11 @@ watch(locale, value => {
         <span />
         <span />
         <span />
-        <em>{{ tab === 'document' ? `${messages.demo.fileName}.doc` : messages.demo.fieldTitle }}</em>
+        <em>{{ tab === 'document' ? `${messages.demo.fileName}.docx` : messages.demo.fieldTitle }}</em>
       </div>
 
       <div v-if="tab === 'document'" class="demo__body demo__body--document">
-        <DocumentEditor v-model="documents[locale]" v-model:page="page" :height="640" :locale="editorLocale" :title="messages.demo.fileName" />
+        <DocumentEditor v-model="documents[locale]" v-model:page="page" v-model:comments="comments[locale]" v-model:track-changes="trackChanges" :author="messages.demo.author" :height="640" :locale="editorLocale" :variables="messages.demo.variables" :title="messages.demo.fileName" />
       </div>
 
       <form v-else class="demo__body demo__form" @submit.prevent>

@@ -82,10 +82,23 @@ To‘rtburchak shaklidagi kataklarni belgilash uchun sichqoncha bilan kataklar u
 | `Enter` / `Shift+Enter` | Qidiruv maydonida: keyingi yoki oldingi moslik |
 | `Enter` | Almashtirish maydonida: joriy moslikni almashtirish |
 | `Ctrl+K` | Havola qo‘shish yoki tahrirlash |
+| `Ctrl+Alt+M` | Izohlar yoqilgan bo‘lsa, belgilangan matnga izoh qo‘shish |
+| `Ctrl+Enter` | Izoh, javob yoki snoska formasida: saqlash |
+| `Escape` | Izoh, javob yoki snoska formasida: saqlamasdan chiqish |
 | `Ctrl+P` | Chop etish |
 | `Ctrl+` sichqoncha g‘ildiragi | Masshtabni kattalashtirish yoki kichraytirish |
 | `O‘ng tugma` | Bosilgan joyga mos kontekst menyusini ochish |
 | `Escape` | Ochiq menyu yoki popoverni, qidiruv panelini yopish, format bo‘yoqchasini bekor qilish yoki to‘liq ekrandan chiqish |
+
+## / menyusi
+
+Buyruqlar menyusini ochish uchun qator boshida yoki probeldan keyin `/` yozing, so‘ng harflar bilan ro‘yxatni filtrlang.
+
+| Tugmalar | Amal |
+| --- | --- |
+| `↑` / `↓` | Buyruqlar bo‘ylab yurish |
+| `Enter` yoki `Tab` | Tanlangan buyruqni bajarish |
+| `Escape` | Menyuni yopish |
 
 ## Markdown uslubidagi qoidalar
 

@@ -1,6 +1,6 @@
 # Usage
 
-This page covers everyday work with `DocumentEditor` and `Editor`: the value, page settings, views, sizing, images, printing and export. For the complete list of options see [API](/docs/api).
+This page covers everyday work with `DocumentEditor` and `Editor`: the value, page settings, views, the `/` menu, sizing, images, your own toolbar buttons, printing and export. For the complete list of options see [API](/docs/api).
 
 ## The document value
 
@@ -83,6 +83,7 @@ The header and footer button of the toolbar edits the running text at the top an
 - Printing and HTML export lay the document out in sheets exactly as the editor does, so the page numbers and page breaks on paper match the screen.
 - The Word export turns them into Word's own header and footer, and `{page}` and `{pages}` into the Word fields PAGE and NUMPAGES, so the numbers stay correct after the document is edited in Word.
 - Exported from the web view the document is not split into sheets: the running texts are still repeated on every printed page, but `{page}` stays empty.
+- The same popover hides the running texts on the first page and sets the number of the first page; see [Page numbering](/docs/word-files#page-numbering).
 
 ## Watermark
 
@@ -135,6 +136,50 @@ The toolbar carries the tools office editors are used for:
 - **Formatting marks** are switched on from the "More" menu and draw a pilcrow at the end of every paragraph. They are painted by the editor only: the document HTML, printing and export never contain them.
 - **The context menu** opens on a right click and follows what was clicked: cut, copy and paste, link actions, table rows and columns, deleting an image, clearing formatting and selecting everything.
 - **Zoom** follows `Ctrl` (`⌘` on macOS) with the mouse wheel.
+
+## The / menu
+
+Typing `/` at the start of a line or after a space opens a list of commands under the caret: normal text, headings 1–3, bulleted, numbered and checklists, quote, code block, table, horizontal line, page break, footnote, table of contents, today's date in the short and the long form, the signature blocks and the template variables from `variables`.
+
+- The letters typed after `/` filter the list by name, and by a few keywords in Uzbek, Russian and English: `/jadval` finds the table.
+- `↑` and `↓` move through the list; `Enter`, `Tab` or a click runs the command. The typed `/filter` is removed first.
+- `Escape` closes the menu, and it stays closed until the text before the caret changes.
+- The menu does not open inside code blocks, in a `disabled` editor or in the HTML source view. `Editor` has it too.
+
+### Your own commands
+
+`slashCommands` adds commands of your application at the top of the list. `run` receives the editing engine:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor, type SlashCommand } from 'nuvra';
+
+const html = ref('');
+
+const slashCommands: SlashCommand[] = [
+  {
+    id: 'director',
+    label: 'Director’s name',
+    icon: 'pencil',
+    keywords: ['direktor', 'директор'],
+    run: engine => engine.insertText('A. Karimov')
+  },
+  {
+    id: 'approved',
+    label: 'Approval stamp',
+    icon: 'signature',
+    run: engine => engine.insertContent('<p style="text-align: right"><strong>APPROVED</strong></p>', { asBlocks: true })
+  }
+];
+</script>
+
+<template>
+  <DocumentEditor v-model="html" :slash-commands="slashCommands" />
+</template>
+```
+
+`icon` is one of the editor's icon names (`IconName`); without it the command shows a plus. The most useful engine methods are listed under [DocumentEngine](/docs/api#documentengine).
 
 ## Sizing
 
@@ -232,12 +277,61 @@ const save = () => {
 | --- | --- |
 | `focus()` | Moves keyboard focus into the document. |
 | `getHTML()` | Writes pending edits into the model and returns the document HTML. |
+| `insertVariable(name)` | Inserts a template variable at the selection. |
+| `updateTableOfContents()` | Inserts or refreshes the table of contents. |
+| `importWord(file)` | Replaces the document with the content of a `.docx` file. |
 | `print()` | Opens the browser print dialog for the document. |
 | `exportHtml()` | Downloads the document as a standalone HTML page. |
-| `exportWord()` | Downloads the document as a Word-compatible `.doc` file. |
-| `engine` | The internal editing engine (`null` until the editor is mounted), for advanced integrations. |
+| `exportWord()` | Downloads the document as a Word file (`.docx`). |
+| `engine` | The editing engine (`null` until the editor is mounted), for advanced integrations. |
 
 `Editor` does not expose these methods.
+
+## Your own toolbar buttons
+
+The `toolbar` slot places buttons of your application at the start of the toolbar's right-hand group. It receives the editing `engine`, the formatting `state` at the caret and `disabled`, which is `true` while the document cannot be edited.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor } from 'nuvra';
+
+const html = ref('');
+
+const lookUp = (text: string) => window.open(`https://www.google.com/search?q=${encodeURIComponent(text)}`);
+</script>
+
+<template>
+  <DocumentEditor v-model="html">
+    <template #toolbar="{ engine, state, disabled }">
+      <button
+        type="button"
+        class="doc-tb-button"
+        title="Insert today's stamp"
+        :disabled="disabled"
+        @mousedown.prevent
+        @click="engine.insertText(`Received ${new Date().toLocaleDateString()}`)"
+      >
+        Stamp
+      </button>
+      <button
+        type="button"
+        class="doc-tb-button"
+        title="Look up the selected text"
+        :disabled="!state.textSelected"
+        @mousedown.prevent
+        @click="lookUp(engine.getSelectedText())"
+      >
+        Look up
+      </button>
+    </template>
+  </DocumentEditor>
+</template>
+```
+
+- `@mousedown.prevent` keeps the selection in the document when the button is pressed, as the built-in buttons do.
+- The `doc-tb-button` class gives a button the look of the toolbar's own buttons; any other markup works as well.
+- Engine commands are undo steps and update `v-model` like typing does. The `state` fields are listed under [EditorUiState](/docs/api#editoruistate).
 
 ## Printing and export
 
@@ -245,7 +339,7 @@ Printing, HTML export and Word export are also available from the “More” men
 
 - **Print** renders the document in a hidden frame with the page size and margins of the page settings, waits for images to load and opens the browser print dialog. Choose “Save as PDF” there to get a PDF.
 - **HTML export** downloads a standalone HTML page with the document styles and the page size.
-- **Word export** downloads a `.doc` file that Word opens in print layout; page breaks become Word page breaks.
+- **Word export** downloads a real Word file (`.docx`) with the page setup, headers and footers and page breaks. "Open Word file (.docx)" in the same menu loads one into the editor. See [Word files and long documents](/docs/word-files).
 
 The `title` prop is used as the print title and the file name. Without it the built-in label `editor.document` is used. Characters that are not allowed in file names are replaced.
 

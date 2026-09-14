@@ -82,10 +82,23 @@ Drag across cells with the mouse to select a rectangle of cells.
 | `Enter` / `Shift+Enter` | In the search field: next or previous match |
 | `Enter` | In the replace field: replace the current match |
 | `Ctrl+K` | Insert or edit a link |
+| `Ctrl+Alt+M` | Add a comment to the selected text, when comments are on |
+| `Ctrl+Enter` | In a comment, reply or footnote form: save it |
+| `Escape` | In a comment, reply or footnote form: leave it without saving |
 | `Ctrl+P` | Print |
 | `Ctrl+` mouse wheel | Zoom the document in or out |
 | `Right click` | Open the context menu for what is under the pointer |
 | `Escape` | Close the open menu or popover, the find bar, drop the format painter, or leave fullscreen |
+
+## The / menu
+
+Type `/` at the start of a line or after a space to open the command menu, then letters to filter it.
+
+| Shortcut | Action |
+| --- | --- |
+| `↑` / `↓` | Move through the commands |
+| `Enter` or `Tab` | Run the highlighted command |
+| `Escape` | Close the menu |
 
 ## Markdown-like input rules
 
