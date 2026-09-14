@@ -139,7 +139,7 @@ The toolbar carries the tools office editors are used for:
 
 ## The / menu
 
-Typing `/` at the start of a line or after a space opens a list of commands under the caret: normal text, headings 1–3, bulleted, numbered and checklists, quote, code block, table, horizontal line, page break, footnote, table of contents, today's date in the short and the long form, the signature blocks and the template variables from `variables`.
+Typing `/` at the start of a line or after a space opens a list of commands under the caret: normal text, headings 1–3, bulleted, numbered and checklists, quote, code block, table, horizontal line, page break, footnote, table of contents, section breaks for landscape and portrait pages, today's date in the short and the long form, the signature blocks and the template variables from `variables`.
 
 - The letters typed after `/` filter the list by name, and by a few keywords in Uzbek, Russian and English: `/jadval` finds the table.
 - `↑` and `↓` move through the list; `Enter`, `Tab` or a click runs the command. The typed `/filter` is removed first.
@@ -283,6 +283,7 @@ const save = () => {
 | `print()` | Opens the browser print dialog for the document. |
 | `exportHtml()` | Downloads the document as a standalone HTML page. |
 | `exportWord()` | Downloads the document as a Word file (`.docx`). |
+| `exportPdf()` | Downloads the document as a PDF drawn from its pages (new in 0.6.0). |
 | `engine` | The editing engine (`null` until the editor is mounted), for advanced integrations. |
 
 `Editor` does not expose these methods.
@@ -335,9 +336,10 @@ const lookUp = (text: string) => window.open(`https://www.google.com/search?q=${
 
 ## Printing and export
 
-Printing, HTML export and Word export are also available from the “More” menu of the toolbar; `Ctrl+P` prints.
+Printing, PDF download, HTML export and Word export are also available from the “More” menu of the toolbar; `Ctrl+P` prints.
 
-- **Print** renders the document in a hidden frame with the page size and margins of the page settings, waits for images to load and opens the browser print dialog. Choose “Save as PDF” there to get a PDF.
+- **Print** renders the document in a hidden frame with the page size and margins of the page settings, waits for images to load and opens the browser print dialog. Choose “Save as PDF” there to get a PDF with selectable text.
+- **PDF download** (new in 0.6.0) saves a PDF right away, without the print dialog; its pages are pictures, so the text cannot be selected. See [Downloading a PDF](/docs/word-files#downloading-a-pdf).
 - **HTML export** downloads a standalone HTML page with the document styles and the page size.
 - **Word export** downloads a real Word file (`.docx`) with the page setup, headers and footers and page breaks. "Open Word file (.docx)" in the same menu loads one into the editor. See [Word files and long documents](/docs/word-files).
 

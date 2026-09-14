@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import EditorDemo from '../components/editor-demo.vue';
 import InstallCommand from '../components/install-command.vue';
 import SiteIcon from '../components/site-icon.vue';
 import type { SiteIconName } from '../components/site-icons';
+import { useCopyButtons } from '../composables/use-copy-buttons';
 import QuickStart from '../content/snippets/quick-start.md';
 import { messages } from '../i18n';
 import { NUVRA_VERSION } from '../site';
@@ -15,6 +16,13 @@ defineOptions({ name: 'HomePage' });
 
 /** Icons of the feature cards, in the order of the feature texts. */
 const FEATURE_ICONS: SiteIconName[] = ['pages', 'table', 'image', 'search', 'printer', 'globe', 'palette', 'feather'];
+
+const codeWindowRef = ref<HTMLElement>();
+const { addCopyButtons } = useCopyButtons();
+
+onMounted(() => {
+  if (codeWindowRef.value) addCopyButtons(codeWindowRef.value);
+});
 
 watchEffect(() => {
   document.title = messages.value.meta.title;
@@ -96,7 +104,7 @@ watchEffect(() => {
             <SiteIcon name="arrow-right" :size="18" />
           </RouterLink>
         </div>
-        <div class="code-window">
+        <div ref="codeWindowRef" class="code-window">
           <div class="code-window__bar" aria-hidden="true">
             <span />
             <span />

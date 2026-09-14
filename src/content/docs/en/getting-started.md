@@ -72,6 +72,7 @@ An empty field has the value `''`, so the usual “required” validation works 
 
 ## Next steps
 
+- [Playground](/playground) — try the props of `DocumentEditor` live and copy the ready-made code.
 - [Usage](/docs/usage) — page settings, view modes, sizing, images, printing and export.
 - [Languages](/docs/translations) — show the interface in Uzbek, English or Russian.
 - [Theming](/docs/theming) — change colors and enable the dark palette.

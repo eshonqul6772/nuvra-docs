@@ -3,6 +3,7 @@ import { type Component, computed, nextTick, onBeforeUnmount, ref, shallowRef, w
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import SiteIcon from '../components/site-icon.vue';
+import { useCopyButtons } from '../composables/use-copy-buttons';
 import { DOCS_NAV, DOCS_PAGES } from '../content/docs/nav';
 import { locale, messages } from '../i18n';
 
@@ -28,8 +29,6 @@ interface OutlineItem {
 
 /** Markdown articles by path, loaded on demand. */
 const ARTICLES = import.meta.glob<{ default: Component }>('../content/docs/*/*.md');
-/** How long a copy button shows its confirmation, in milliseconds. */
-const COPIED_DURATION = 1600;
 /** Band of the viewport, below the header, in which a heading counts as the one being read. */
 const READING_ZONE = '-96px 0px -66% 0px';
 
@@ -40,6 +39,7 @@ const article = shallowRef<Component | null>(null);
 const outline = ref<OutlineItem[]>([]);
 const activeHeading = ref('');
 const menuOpen = ref(false);
+const { addCopyButtons, removeCopyButtons } = useCopyButtons();
 
 let headingObserver: IntersectionObserver | undefined;
 /** Grows with every load, so a slow earlier load cannot replace a newer article. */
@@ -49,32 +49,6 @@ const pageIndex = computed(() => DOCS_PAGES.findIndex(entry => entry.slug === pr
 const page = computed(() => DOCS_PAGES[pageIndex.value]);
 const previousPage = computed(() => (pageIndex.value > 0 ? DOCS_PAGES[pageIndex.value - 1] : undefined));
 const nextPage = computed(() => (pageIndex.value >= 0 ? DOCS_PAGES[pageIndex.value + 1] : undefined));
-
-/** Wraps every code block of the article with a copy button. */
-const addCopyButtons = (root: HTMLElement) => {
-  for (const pre of root.querySelectorAll('pre')) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'code-block';
-    pre.before(wrapper);
-    wrapper.append(pre);
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'code-block__copy';
-    button.textContent = messages.value.docs.copy;
-    button.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(pre.textContent ?? '');
-      } catch {
-        return;
-      }
-      button.textContent = messages.value.docs.copied;
-      setTimeout(() => {
-        button.textContent = messages.value.docs.copy;
-      }, COPIED_DURATION);
-    });
-    wrapper.append(button);
-  }
-};
 
 /** Lists the article's second- and third-level headings and marks the one being read. */
 const buildOutline = (root: HTMLElement) => {
@@ -109,6 +83,7 @@ const loadArticle = async () => {
   const load = ARTICLES[`../content/docs/${locale.value}/${props.slug}.md`];
   const current = ++loadCount;
   menuOpen.value = false;
+  removeCopyButtons();
   if (!load) {
     article.value = null;
     outline.value = [];
@@ -134,7 +109,7 @@ const onArticleClick = (event: MouseEvent) => {
   if (href.startsWith('#')) {
     event.preventDefault();
     void router.push({ hash: href });
-  } else if (href.startsWith('/docs')) {
+  } else if (href.startsWith('/docs') || href.startsWith('/playground')) {
     event.preventDefault();
     void router.push(href);
   }

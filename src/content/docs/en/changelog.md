@@ -2,7 +2,28 @@
 
 Notable changes of each nuvra version, newest first.
 
-## 0.5.0 (unreleased)
+## 0.6.0
+
+### Export and long documents
+
+- "Download as PDF" in the "More" menu and `exportPdf()` on a template ref save a PDF without the print dialog. Every page is drawn into a picture, so the PDF looks like the printout but its text cannot be selected or searched; images from servers without CORS are left out. The new `exportError` event reports a PDF that could not be drawn. See [Word files and long documents](/docs/word-files#downloading-a-pdf).
+- Section breaks turn the following pages to landscape or portrait: "Section break: landscape pages" and "Section break: portrait pages" in the insert menu and the `/` menu, saved as `<div data-type="section-break" data-orientation="landscape">`; `engine.insertSectionBreak()`. Turned pages are drawn, printed and written to PDF on turned paper, each section becomes a Word section, and Word files with several sections open with section breaks. See [Pages in different orientations](/docs/word-files#pages-in-different-orientations).
+- The navigation pane has **Headings** and **Pages** tabs; the pages tab shows thumbnails that scroll to their page in the page view.
+
+### Editing together
+
+- The `collaborators` prop draws the carets and selections of other people with their names, and the `selectionChange` event reports your own selection as character positions. `Collaborator`, `SelectionOffsets` and `collaboratorColor` are exported, and the engine has `getSelectionOffsets()`, `getOffsetRects()` and `setContent(html, { keepSelection })`. See [Editing together](/docs/collaboration).
+- A new `v-model` value from outside keeps the caret at the same character position while the editor has focus.
+
+### Toolbar
+
+- The comment and tracked changes buttons are joined in one **Review** menu: "Track changes", "Changes", "Add comment" (`Ctrl+Alt+M`) and "Comments".
+
+### Word import
+
+- `readDocx` and "Open Word file (.docx)" take the page setup from the first section of a document instead of the last one.
+
+## 0.5.0
 
 ### Word files and long documents
 

@@ -1,29 +1,35 @@
 import { computed, ref, watchEffect } from 'vue';
 
 import { en } from './messages/en';
+import { ru } from './messages/ru';
 import { uz } from './messages/uz';
 
 /** Languages of the site. */
-export type Locale = 'en' | 'uz';
+export type Locale = 'en' | 'uz' | 'ru';
 
 /** Language switch options. */
 export const LOCALES: ReadonlyArray<{ value: Locale; label: string }> = [
   { value: 'en', label: 'EN' },
-  { value: 'uz', label: 'UZ' }
+  { value: 'uz', label: 'UZ' },
+  { value: 'ru', label: 'RU' }
 ];
 
 const STORAGE_KEY = 'nuvra-docs:locale';
-const MESSAGES = { en, uz };
+const MESSAGES = { en, uz, ru };
 
-/** The saved language, or Uzbek for Uzbek browsers and English otherwise. */
+/** Whether a stored or detected value is one of the site languages. */
+const isLocale = (value: unknown): value is Locale => LOCALES.some(option => option.value === value);
+
+/** The saved language, or Uzbek or Russian for browsers in those languages and English otherwise. */
 const readInitialLocale = (): Locale => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === 'en' || saved === 'uz') return saved;
+    if (isLocale(saved)) return saved;
   } catch {
     // Storage can be unavailable (private mode); the browser language applies.
   }
-  return navigator.language.toLowerCase().startsWith('uz') ? 'uz' : 'en';
+  const browser = navigator.language.toLowerCase().slice(0, 2);
+  return isLocale(browser) ? browser : 'en';
 };
 
 /** Active site language. */

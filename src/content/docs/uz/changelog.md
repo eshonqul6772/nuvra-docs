@@ -2,7 +2,28 @@
 
 nuvra’ning har bir versiyasidagi muhim o‘zgarishlar, eng yangisidan boshlab.
 
-## 0.5.0 (hali chiqmagan)
+## 0.6.0
+
+### Eksport va katta hujjatlar
+
+- “Yana” menyusidagi “PDF sifatida yuklab olish” va template ref’dagi `exportPdf()` PDF’ni chop etish oynasisiz saqlaydi. Har bir sahifa rasmga chiziladi, shuning uchun PDF chop etilgan nusxaga o‘xshaydi, lekin uning matnini belgilab yoki qidirib bo‘lmaydi; CORS ruxsati bermagan serverlardagi rasmlar tushib qoladi. Yangi `exportError` hodisasi chizib bo‘lmagan PDF haqida xabar beradi. Batafsil: [Word fayllari va katta hujjatlar](/docs/word-files#pdf-yuklab-olish).
+- Bo‘lim uzilishlari keyingi sahifalarni albom yoki kitob yo‘nalishiga buradi: qo‘shish menyusi va `/` menyusidagi “Bo‘lim uzilishi: albom sahifalar” va “Bo‘lim uzilishi: kitob sahifalar”, `<div data-type="section-break" data-orientation="landscape">` sifatida saqlanadi; `engine.insertSectionBreak()`. Burilgan sahifalar burilgan qog‘ozda chiziladi, chop etiladi va PDF’ga yoziladi, har bir bo‘lim Word bo‘limiga aylanadi, bir nechta bo‘limli Word fayllari esa bo‘lim uzilishlari bilan ochiladi. Batafsil: [Turli yo‘nalishdagi sahifalar](/docs/word-files#turli-yonalishdagi-sahifalar).
+- Navigatsiya panelida **Sarlavhalar** va **Sahifalar** varaqlari bor; sahifalar varag‘i sahifa ko‘rinishida o‘z sahifasiga aylantiradigan kichik rasmlarni ko‘rsatadi.
+
+### Birgalikda tahrirlash
+
+- `collaborators` propi boshqa odamlarning kursorlari va belgilashlarini ismlari bilan chizadi, `selectionChange` hodisasi esa sizning belgilashingizni belgi pozitsiyalari ko‘rinishida xabar qiladi. `Collaborator`, `SelectionOffsets` va `collaboratorColor` eksport qilinadi, dvigatelda esa `getSelectionOffsets()`, `getOffsetRects()` va `setContent(html, { keepSelection })` bor. Batafsil: [Birgalikda tahrirlash](/docs/collaboration).
+- Tashqaridan kelgan yangi `v-model` qiymati muharrir fokusda bo‘lsa, kursorni o‘sha belgi pozitsiyasida qoldiradi.
+
+### Asboblar paneli
+
+- Izoh va o‘zgarishlarni kuzatish tugmalari bitta **Taqriz** menyusiga birlashtirildi: “O‘zgarishlarni kuzatish”, “O‘zgarishlar”, “Izoh qo‘shish” (`Ctrl+Alt+M`) va “Izohlar”.
+
+### Word importi
+
+- `readDocx` va “Word faylini ochish (.docx)” sahifa sozlamalarini hujjatning oxirgi emas, birinchi bo‘limidan oladi.
+
+## 0.5.0
 
 ### Word fayllari va katta hujjatlar
 

@@ -2,6 +2,8 @@
 
 A complete reference of everything nuvra exports: components, functions, constants and types.
 
+Entries marked **New in 0.6.0** were added in version 0.6.0; see [Changelog](/docs/changelog).
+
 ## Exports
 
 ```ts
@@ -12,6 +14,7 @@ import {
   Editor,
   buildDocx,
   buildTableOfContents,
+  collaboratorColor,
   compareDocuments,
   createCommentId,
   createHeaderFooter,
@@ -34,6 +37,7 @@ import {
   transliterate,
   uz,
   uzCyrl,
+  type Collaborator,
   type DocumentComment,
   type DocumentCommentReply,
   type DocumentComparison,
@@ -58,6 +62,7 @@ import {
   type PageSettings,
   type PageSizeKey,
   type PageWatermark,
+  type SelectionOffsets,
   type SlashCommand,
   type TableOfContentsEntry,
   type TableOfContentsOptions,
@@ -80,6 +85,7 @@ The full Word-style editor with toolbar, page or web view, status bar, find and 
 | `author` | `string` | `''` | Name written as the author of new comments, replies and tracked changes; see [Comments and comparison](/docs/review). |
 | `autofocus` | `boolean` | `false` | Places the caret at the end of the document as soon as the editor is ready. |
 | `canvasPadding` | `number \| string` | `50` | Gray space around the page or web sheet. |
+| `collaborators` | `Collaborator[]` | `[]` | **New in 0.6.0.** Other people editing the document; their carets and selections are drawn over it. See [Editing together](/docs/collaboration). |
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | View shown first; the user can switch it in the status bar. |
 | `disabled` | `boolean` | `false` | Makes the document read-only and disables every editing control. |
 | `height` | `number \| string` | `760` | Height of the whole editor, or `'auto'` to grow with the content between `minHeight` and `maxHeight`. |
@@ -104,7 +110,7 @@ Numbers are pixels; strings are used as CSS lengths. Other attributes, such as `
 | `v-model` | `string` | `''` | Document HTML. An empty document is `''`; typing updates the value after a short pause. |
 | `v-model:page` | `PageSettings` | `createPageSettings()` | Paper size, orientation, margins, headers and footers, watermark and page numbering. |
 | `v-model:comments` | `DocumentComment[]` | — | Comments on the document. Binding it turns the comment tools on; the HTML keeps only their anchors. |
-| `v-model:trackChanges` | `boolean` | `false` | Whether edits are recorded as tracked changes. The "Track changes" toolbar button switches it too. |
+| `v-model:trackChanges` | `boolean` | `false` | Whether edits are recorded as tracked changes. "Track changes" in the Review menu of the toolbar switches it too. |
 
 ### Events
 
@@ -114,6 +120,8 @@ Numbers are pixels; strings are used as CSS lengths. Other attributes, such as `
 | `blur` | — | The editing surface lost focus; pending model updates have already been written. |
 | `uploadError` | `error: unknown` | An image was rejected by validation or its upload failed. |
 | `importError` | `error: unknown` | A Word file could not be read; the document is left unchanged. |
+| `exportError` | `error: unknown` | **New in 0.6.0.** The PDF could not be drawn, for example because the browser does not allow it; no file is downloaded. |
+| `selectionChange` | `selection: SelectionOffsets \| null` | **New in 0.6.0.** The caret or selection moved; `null` when it left the document. Send it to the other people editing. |
 
 ### Slots
 
@@ -135,6 +143,7 @@ Available through a template ref.
 | `print` | `() => Promise<void>` | Opens the browser print dialog. |
 | `exportHtml` | `() => Promise<void>` | Downloads the document as an HTML page. |
 | `exportWord` | `() => Promise<void>` | Downloads the document as a Word file (`.docx`). |
+| `exportPdf` | `() => Promise<void>` | **New in 0.6.0.** Downloads the document as a PDF drawn from its pages, without the print dialog; the text of the PDF is not selectable. Errors are emitted as `exportError`. See [Word files and long documents](/docs/word-files#downloading-a-pdf). |
 | `engine` | `DocumentEngine \| null` | The editing engine, for advanced integrations; `null` until the editor is mounted. |
 
 ## Editor
@@ -318,6 +327,14 @@ function createCommentId(): string;
 ```
 
 A new random id for a comment or a reply, usable as an HTML attribute value, such as `cmfz3k1a9x2b7q`.
+
+### collaboratorColor
+
+```ts
+function collaboratorColor(collaborator: Pick<Collaborator, 'id' | 'color'>): string;
+```
+
+**New in 0.6.0.** The colour the editor draws a collaborator in: their own `color`, or one of eight colours picked from the `id`, the same for the same id. Useful for a list of people next to the editor.
 
 ### readOutline
 
@@ -526,7 +543,7 @@ interface DocxSource {
 interface DocxImport {
   /** Document content as HTML. */
   html: string;
-  /** Page setup of the document's last section. */
+  /** Page setup of the document's first section; further sections arrive as section breaks. */
   page: PageSettings;
 }
 ```
@@ -587,6 +604,32 @@ interface SlashCommand {
 }
 ```
 
+### Collaborator, SelectionOffsets
+
+**New in 0.6.0.** See [Editing together](/docs/collaboration).
+
+```ts
+/** A selection as character positions through the document; equal positions are a caret. */
+interface SelectionOffsets {
+  /** Where selecting started. */
+  anchor: number;
+  /** Where the caret is. */
+  focus: number;
+}
+
+/** Someone else editing the same document. */
+interface Collaborator {
+  /** Stable id of the person or connection. */
+  id: string;
+  /** Name shown next to the caret. */
+  name: string;
+  /** CSS colour of the caret and the selection; one is picked from the id when it is left out. */
+  color?: string;
+  /** Where the person's caret or selection is, or `null` while they are not in the document. */
+  selection: SelectionOffsets | null;
+}
+```
+
 ### IconName
 
 A union of the names of the editor's built-in icons, such as `'braces'`, `'calendar-days'`, `'file-text'`, `'signature'` or `'table-of-contents'`. Your editor's type hints list all of them.
@@ -607,6 +650,7 @@ The editing engine behind `DocumentEditor`, exported as a type only. You get an 
 | `setListNumbering(style)` | Switches the numbered list at the caret between `'default'` and `'legal'` numbering. |
 | `insertTable(rows, cols, withHeaderRow)` | Inserts a table. |
 | `insertPageBreak()`, `insertHorizontalRule()` | Insert a page break or a horizontal line. |
+| `insertSectionBreak(orientation: 'portrait' \| 'landscape')` | **New in 0.6.0.** Inserts a section break; the pages after it are turned to `orientation`. See [Word files and long documents](/docs/word-files#pages-in-different-orientations). |
 | `insertFootnote(text: string)` | Inserts a footnote reference with its note at the selection; returns the reference element, or `null` when nothing could be inserted. |
 | `setFootnoteText(element, text: string)` | Changes the note of a footnote (up to 2000 characters). |
 | `removeFootnote(element)` | Removes a footnote reference together with its note. |
@@ -619,6 +663,9 @@ The editing engine behind `DocumentEditor`, exported as a type only. You get an 
 | `undo()`, `redo()` | Undo and redo. |
 | `focus(position?: 'start' \| 'end')` | Focuses the document. |
 | `getHTML()` | Clean HTML of the document. |
+| `setContent(html: string, options?: { keepSelection?: boolean })` | Replaces the document and clears the undo history. **New in 0.6.0:** with `keepSelection` the caret stays at the same character position while the editor has focus; `v-model` uses it. |
+| `getSelectionOffsets()` | **New in 0.6.0.** The selection as `SelectionOffsets`, or `null`. |
+| `getOffsetRects(offsets: SelectionOffsets)` | **New in 0.6.0.** Viewport rectangles (`DOMRect[]`) of the text between two positions; a caret gives one rectangle with no width. |
 
 Each command is one undo step and updates `v-model` like typing does.
 

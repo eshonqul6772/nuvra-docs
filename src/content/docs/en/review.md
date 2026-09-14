@@ -26,10 +26,10 @@ Start with an empty array: `undefined` keeps the tools hidden.
 
 ### Working with comments
 
-Two buttons appear at the right side of the toolbar:
+The comment tools are in the **Review** menu at the right side of the toolbar (the speech bubble with an arrow), below the tracked changes entries:
 
 - **Add comment** anchors a comment to the selected text and opens the form. It needs selected text; the shortcut is `Ctrl+Alt+M`. `Ctrl+Enter` saves the comment, `Escape` or **Cancel** drops it together with its anchor.
-- **Comments** opens the panel with every comment in the order of its text.
+- **Comments** opens and closes the panel with every comment in the order of its text.
 
 In the panel:
 
@@ -142,7 +142,7 @@ const kept = comments.filter(comment => anchored.has(comment.id));
 
 ### Turning tracking on
 
-Bind `v-model:trackChanges`, or let users press the "Track changes" button of the toolbar. While it is on, typed text is marked as inserted and deleted text stays in the document, marked as deleted, until someone accepts or rejects the change. `author` is written on every change.
+Bind `v-model:trackChanges`, or let users choose "Track changes" in the **Review** menu of the toolbar. While it is on, typed text is marked as inserted and deleted text stays in the document, marked as deleted, until someone accepts or rejects the change. `author` is written on every change.
 
 ```vue
 <script setup lang="ts">
@@ -158,7 +158,7 @@ const trackChanges = ref(true);
 </template>
 ```
 
-Tracking is off by default. The "Track changes" button is disabled while the editor is `disabled`.
+Tracking is off by default. The "Track changes" entry is disabled while the editor is `disabled`. The Review button is highlighted while tracking is on or one of the review panels is open.
 
 ### How changes are saved
 
@@ -177,7 +177,7 @@ Changes are part of the document HTML, so `v-model` saves them with nothing else
 
 ### Reviewing changes
 
-The "Changes" button opens a panel with every change in document order: whether text was inserted or deleted, the author, the time and the text.
+"Changes" in the **Review** menu opens a panel with every change in document order: whether text was inserted or deleted, the author, the time and the text.
 
 | Action | Result |
 | --- | --- |

@@ -26,10 +26,10 @@ Bo‘sh massivdan boshlang: `undefined` bo‘lsa, vositalar yashirin qoladi.
 
 ### Izohlar bilan ishlash
 
-Asboblar panelining o‘ng tomonida ikkita tugma paydo bo‘ladi:
+Izoh vositalari asboblar panelining o‘ng tomonidagi **Taqriz** menyusida (strelkali nutq pufakchasi, “Taqriz: izohlar va o‘zgarishlar”), o‘zgarishlarni kuzatish bandlari ostida joylashgan:
 
 - **Izoh qo‘shish** belgilangan matnga izoh bog‘laydi va izoh formasini ochadi. Buning uchun matn belgilangan bo‘lishi kerak; tezkor tugmasi `Ctrl+Alt+M`. `Ctrl+Enter` izohni saqlaydi, `Escape` yoki **Bekor qilish** esa izohni langari bilan birga olib tashlaydi.
-- **Izohlar** barcha izohlar matndagi tartibda ko‘rinadigan panelni ochadi.
+- **Izohlar** barcha izohlar matndagi tartibda ko‘rinadigan panelni ochadi va yopadi.
 
 Panelda:
 
@@ -142,7 +142,7 @@ O‘z kodingiz qo‘shadigan izohlar uchun `createCommentId()` shu formatdagi id
 
 ### Kuzatishni yoqish
 
-`v-model:trackChanges` ni bog‘lang yoki foydalanuvchi asboblar panelidagi “O‘zgarishlarni kuzatish” tugmasini bossin. Kuzatish yoqilganda yozilgan matn qo‘shilgan deb belgilanadi, o‘chirilgan matn esa kimdir o‘zgarishni qabul yoki rad etmaguncha hujjatda o‘chirilgan belgisi bilan qoladi. Har bir o‘zgarishga `author` yoziladi.
+`v-model:trackChanges` ni bog‘lang yoki foydalanuvchi asboblar panelidagi **Taqriz** menyusidan “O‘zgarishlarni kuzatish” bandini tanlasin. Kuzatish yoqilganda yozilgan matn qo‘shilgan deb belgilanadi, o‘chirilgan matn esa kimdir o‘zgarishni qabul yoki rad etmaguncha hujjatda o‘chirilgan belgisi bilan qoladi. Har bir o‘zgarishga `author` yoziladi.
 
 ```vue
 <script setup lang="ts">
@@ -158,7 +158,7 @@ const trackChanges = ref(true);
 </template>
 ```
 
-Standart holatda kuzatish o‘chiq. Muharrir `disabled` bo‘lsa, “O‘zgarishlarni kuzatish” tugmasi o‘chirilgan.
+Standart holatda kuzatish o‘chiq. Muharrir `disabled` bo‘lsa, “O‘zgarishlarni kuzatish” bandi o‘chirilgan. Kuzatish yoqilgan yoki taqriz panellaridan biri ochiq bo‘lsa, Taqriz tugmasi ajratib ko‘rsatiladi.
 
 ### O‘zgarishlar qanday saqlanadi
 
@@ -177,7 +177,7 @@ O‘zgarishlar hujjat HTML’ining bir qismi, shuning uchun ularni `v-model` saq
 
 ### O‘zgarishlarni ko‘rib chiqish
 
-“O‘zgarishlar” tugmasi hujjatdagi barcha o‘zgarishlar tartib bilan ko‘rinadigan panelni ochadi: matn qo‘shilgani yoki o‘chirilgani, muallif, vaqt va matnning o‘zi.
+**Taqriz** menyusidagi “O‘zgarishlar” bandi hujjatdagi barcha o‘zgarishlar tartib bilan ko‘rinadigan panelni ochadi: matn qo‘shilgani yoki o‘chirilgani, muallif, vaqt va matnning o‘zi.
 
 | Amal | Natija |
 | --- | --- |

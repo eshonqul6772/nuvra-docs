@@ -1,6 +1,6 @@
 # Word files and long documents
 
-This page covers opening and saving Word files, and the tools for long documents: footnotes, multilevel numbering, page numbering options, the table of contents and the navigation pane.
+This page covers opening and saving Word files, downloading a PDF, and the tools for long documents: footnotes, multilevel numbering, page numbering options, pages in different orientations, the table of contents and the navigation pane.
 
 ## Word files (.docx)
 
@@ -18,7 +18,7 @@ The file keeps:
 - images in PNG, JPEG, GIF and BMP;
 - footnotes, as Word's own footnotes;
 - tracked changes, as Word revisions with their author and time;
-- page breaks and horizontal lines;
+- page breaks, section breaks (as Word sections) and horizontal lines;
 - paper size, orientation and margins, headers and footers with the PAGE and NUMPAGES fields, the watermark and the page numbering options.
 
 Template variables are written as `{{name}}` text, and comments are left out: the commented text stays.
@@ -36,7 +36,7 @@ await fetch('/api/documents/42/docx', { method: 'PUT', body: blob });
 
 ### Opening a Word file
 
-"Open Word file (.docx)" in the "More" menu picks a file and replaces the document with its content. The paper size, orientation, margins, header and footer texts and page numbering come from the file too; the current watermark stays. The replacement is one undo step for the content. The entry is disabled while the editor is `disabled`.
+"Open Word file (.docx)" in the "More" menu picks a file and replaces the document with its content. The paper size, orientation, margins, header and footer texts and page numbering come from the file too; the current watermark stays. A file with several sections arrives with a section break at the start of every further section; see [Pages in different orientations](#pages-in-different-orientations). The replacement is one undo step for the content. The entry is disabled while the editor is `disabled`.
 
 The same works from code with `importWord(file)`. A file that cannot be read leaves the document unchanged and emits `importError`:
 
@@ -78,11 +78,47 @@ const { html, page } = await readDocx(await file.arrayBuffer());
 | Endnotes | Not imported. |
 | Revisions | Insertions and deletions of text are kept both ways. Text Word marked as moved arrives as a deletion at its old place and an insertion at the new one. A formatting revision arrives as the new formatting without a revision. |
 | Word comments | Not imported. |
-| Several sections | The document gets one page setup: the one of the last section. |
+| Several sections | Every section after the first starts with a section break in that section's orientation. The document takes the paper size, orientation, margins, title page option and first page number of its first section; different paper sizes or margins of later sections are not kept, and a continuous section starts a new page. |
 | Different first page header | The option is kept, but the content of the first page header and footer is not imported. |
 | Headers and footers | Only their text is imported, split into the left, centre and right parts; formatting and images are dropped. |
 | Watermark, text boxes, shapes | Not imported. |
 | Fields | PAGE and NUMPAGES in headers and footers become `{page}` and `{pages}`; other fields keep the text they showed. |
+
+## Downloading a PDF
+
+> New in 0.6.0: "Download as PDF", `exportPdf()` and `exportError`.
+
+"Download as PDF" in the "More" menu, or `exportPdf()` on a template ref, saves the document as a PDF file straight away, without the print dialog. The file name comes from the `title` prop.
+
+Every sheet is drawn into a picture (through an SVG `foreignObject` and a canvas, encoded as JPEG), and the pictures are written into the PDF one per page. So the PDF looks like the printout, with the headers and footers, the watermark, footnotes and turned pages, but:
+
+- its text cannot be selected, searched or read aloud, and the file is larger than a PDF with real text;
+- images from another server are included only when that server allows the request (CORS); others are left out of the PDF;
+- a web font that is not installed on the computer may be replaced by a fallback font in the picture.
+
+The PDF is drawn from the sheets of the page view. In the web view the editor switches to the page view for the moment of the export and back afterwards.
+
+When the pages cannot be drawn, for example because the browser does not allow reading the canvas back, the editor emits `exportError` and no file is downloaded. Printing with "Save as PDF" in the print dialog remains the way to a PDF with selectable text:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor } from 'nuvra';
+
+const html = ref('');
+const editor = ref<InstanceType<typeof DocumentEditor>>();
+
+const onExportError = (error: unknown) => {
+  console.error(error);
+  void editor.value?.print(); // fall back to the print dialog
+};
+</script>
+
+<template>
+  <DocumentEditor ref="editor" v-model="html" title="Contract" @export-error="onExportError" />
+  <button type="button" @click="editor?.exportPdf()">PDF</button>
+</template>
+```
 
 ## Footnotes
 
@@ -152,6 +188,35 @@ With these settings the title page has no number and the next page is numbered 1
 
 In Word the watermark is part of the header, so a document with "Hide on the first page" shows no watermark on its first page there.
 
+## Pages in different orientations
+
+> New in 0.6.0: section breaks.
+
+A wide table or a chart often needs a landscape page inside a portrait document. "Section break: landscape pages" in the insert menu (the **+** button) or in the `/` menu turns the pages after the caret; "Section break: portrait pages" turns the following pages back. From code: `engine.insertSectionBreak('landscape')` or `'portrait'`.
+
+A section break starts a new page, like a page break. The pages after it take the orientation of the break until the next section break; the paper size and the margins stay those of the page settings. A break whose orientation matches the pages before it works as an ordinary page break.
+
+It is saved as an empty block:
+
+```html
+<p>2. The schedule of works is given in the table below.</p>
+<div data-type="section-break" data-orientation="landscape"></div>
+<table>…</table>
+<div data-type="section-break" data-orientation="portrait"></div>
+<h2>3. Final provisions</h2>
+```
+
+| Place | Turned pages |
+| --- | --- |
+| Page view | Sheets of different sizes, aligned at the left. Blocks of a turned section get the text width of their sheet; a table with explicit column widths keeps them, and a paragraph with a right indent keeps its right margin. The break is drawn as a double line labelled with the orientation. |
+| Web view | One continuous sheet with the labelled break line; printing and HTML export from the web view do not turn pages. |
+| Printing and HTML export from the page view | Turned sheets use a named `@page` rule, so they are printed on turned paper. A browser that does not support named pages prints them in the document's orientation. |
+| PDF | Turned pages. |
+| Word export | Every section is a Word section with its own orientation. |
+| Word import | Every section after the first starts with a section break; see [Limits](#limits). |
+
+The header, footer, watermark and page numbers continue on turned pages.
+
 ## Table of contents
 
 "Table of contents" in the insert menu (the **+** button) or in the `/` menu inserts a table of contents at the caret. It lists the headings of levels 1 to 3 written directly in the document, not those inside tables, lists or quotes, with the page each starts on. Page numbers need the page view; in the web view the number column stays empty.
@@ -172,4 +237,9 @@ So it prints, exports to HTML and Word, and is compared like any other table. Te
 
 ## Navigation pane
 
-"Navigation pane" in the "More" menu opens a panel at the left with every heading of the document, indented by level. In the page view each heading shows the page it starts on. Clicking a heading scrolls to it and puts the caret at its start. The list follows edits after a short pause; a document without headings shows a hint to apply a heading style.
+"Navigation pane" in the "More" menu opens a panel at the left with two tabs, **Headings** and **Pages**.
+
+- **Headings** lists every heading of the document, indented by level. In the page view each heading shows the page it starts on. Clicking a heading scrolls to it and puts the caret at its start. A document without headings shows a hint to apply a heading style.
+- **Pages** shows a small picture of every page with its number; a turned page gets a turned picture. Clicking a picture scrolls to that page. The thumbnails need the page view; in the web view the tab says so. (New in 0.6.0.)
+
+Both lists follow edits after a short pause.

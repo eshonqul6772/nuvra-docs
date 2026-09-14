@@ -1,17 +1,32 @@
-/** English interface texts of the site; the Uzbek texts follow the same shape. */
+/** English interface texts of the site; the Uzbek and Russian texts follow the same shape. */
 export const en = {
   meta: {
     title: 'nuvra — Word-style document editor for Vue 3',
-    docsTitle: 'nuvra docs'
+    docsTitle: 'nuvra docs',
+    playgroundTitle: 'Playground · nuvra'
   },
   nav: {
     main: 'Main navigation',
     docs: 'Docs',
+    playground: 'Playground',
     demo: 'Demo',
+    search: 'Search',
     language: 'Language',
     theme: 'Switch colour scheme',
     github: 'nuvra on GitHub',
     menu: 'Documentation menu'
+  },
+  search: {
+    title: 'Search the docs',
+    placeholder: 'Search articles, props, events…',
+    results: 'Search results',
+    hint: 'Search the guide, the recipes and the API reference.',
+    loading: 'Loading articles…',
+    empty: (query: string) => `Nothing found for “${query}”.`,
+    count: (count: number) => (count === 1 ? '1 result' : `${count} results`),
+    navigate: 'to move',
+    select: 'to open',
+    close: 'Close'
   },
   hero: {
     badge: 'Vue 3 · zero UI dependencies',
@@ -46,6 +61,14 @@ export const en = {
       text: 'Should the legal department approve documents too? Select any text and press “Add comment” to leave your own note.'
     },
     fileName: 'Service agreement',
+    samples: {
+      label: 'Sample documents',
+      contract: 'Service agreement',
+      letter: 'Official letter',
+      order: 'Order',
+      application: 'Application',
+      certificate: 'Certificate of employment'
+    },
     fieldTitle: 'New role',
     nameLabel: 'Role name',
     nameValue: 'Content editor',
@@ -141,9 +164,40 @@ export const en = {
     next: 'Next',
     menu: 'Menu',
     copy: 'Copy',
+    copyCode: 'Copy code',
     copied: 'Copied',
     missingTitle: 'This page doesn’t exist',
     missingText: 'Pick a topic from the menu.'
+  },
+  playground: {
+    eyebrow: 'Playground',
+    title: 'Try the props, then copy the code.',
+    lead: 'Every change on the panel applies to the editor right away, and the snippet below always matches what you see.',
+    editor: 'Editor',
+    controls: 'Props',
+    viewMode: 'View shown first',
+    viewPage: 'Page',
+    viewWeb: 'Web',
+    height: 'Height in pixels',
+    heightAuto: 'Grow with the content',
+    locale: 'Interface language',
+    disabled: 'Read-only document',
+    ruler: 'Ruler above the sheet',
+    maxLength: 'Character limit, 0 for none',
+    placeholder: 'Text of an empty document',
+    placeholderValue: 'Start writing your document…',
+    printTitle: 'Print title and file name',
+    author: 'Author of comments and changes',
+    bindings: 'Bindings',
+    comments: 'Bind v-model:comments',
+    commentsHint: 'Turns the comment tools on.',
+    trackChanges: 'Bind v-model:trackChanges',
+    trackChangesOn: 'Record changes',
+    variables: 'Pass sample variables',
+    content: 'Document',
+    loadSample: 'Load the sample',
+    clear: 'Clear',
+    code: 'Code'
   },
   notFound: {
     title: 'Page not found',

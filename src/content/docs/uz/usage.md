@@ -139,7 +139,7 @@ Asboblar panelida ofis muharrirlaridagi vositalar bor:
 
 ## / menyusi
 
-Qator boshida yoki probeldan keyin `/` yozilsa, kursor ostida buyruqlar ro‘yxati ochiladi: oddiy matn, 1–3-darajali sarlavhalar, belgili, raqamli va vazifalar ro‘yxati, iqtibos, kod bloki, jadval, gorizontal chiziq, sahifa uzilishi, snoska, mundarija, bugungi sananing qisqa va to‘liq shakli, imzo bloklari hamda `variables` dagi shablon o‘zgaruvchilari.
+Qator boshida yoki probeldan keyin `/` yozilsa, kursor ostida buyruqlar ro‘yxati ochiladi: oddiy matn, 1–3-darajali sarlavhalar, belgili, raqamli va vazifalar ro‘yxati, iqtibos, kod bloki, jadval, gorizontal chiziq, sahifa uzilishi, snoska, mundarija, albom va kitob sahifalar uchun bo‘lim uzilishlari, bugungi sananing qisqa va to‘liq shakli, imzo bloklari hamda `variables` dagi shablon o‘zgaruvchilari.
 
 - `/` dan keyin yozilgan harflar ro‘yxatni nomi va o‘zbek, rus, ingliz tillaridagi bir nechta kalit so‘z bo‘yicha filtrlaydi: `/jadval` jadvalni topadi.
 - `↑` va `↓` ro‘yxat bo‘ylab yuradi; `Enter`, `Tab` yoki sichqoncha bosilsa, buyruq bajariladi. Yozilgan `/filtr` avval o‘chiriladi.
@@ -283,6 +283,7 @@ const save = () => {
 | `print()` | Hujjat uchun brauzerning chop etish oynasini ochadi. |
 | `exportHtml()` | Hujjatni mustaqil HTML sahifa sifatida yuklab beradi. |
 | `exportWord()` | Hujjatni Word fayli (`.docx`) sifatida yuklab beradi. |
+| `exportPdf()` | Hujjatni sahifalaridan chizilgan PDF sifatida yuklab beradi (0.6.0 versiyada yangi). |
 | `engine` | Tahrirlash dvigateli (muharrir yuklanmaguncha `null`), murakkab integratsiyalar uchun. |
 
 `Editor` bu metodlarni taqdim etmaydi.
@@ -335,9 +336,10 @@ const lookUp = (text: string) => window.open(`https://www.google.com/search?q=${
 
 ## Chop etish va eksport
 
-Chop etish, HTML va Word eksporti asboblar panelidagi “Yana” menyusida ham bor; `Ctrl+P` chop etadi.
+Chop etish, PDF yuklab olish, HTML va Word eksporti asboblar panelidagi “Yana” menyusida ham bor; `Ctrl+P` chop etadi.
 
-- **Chop etish** hujjatni sahifa sozlamalaridagi o‘lcham va hoshiyalar bilan yashirin freymda chizadi, rasmlar yuklanishini kutadi va brauzerning chop etish oynasini ochadi. PDF olish uchun u yerda “PDF sifatida saqlash”ni tanlang.
+- **Chop etish** hujjatni sahifa sozlamalaridagi o‘lcham va hoshiyalar bilan yashirin freymda chizadi, rasmlar yuklanishini kutadi va brauzerning chop etish oynasini ochadi. Belgilanadigan matnli PDF olish uchun u yerda “PDF sifatida saqlash”ni tanlang.
+- **PDF yuklab olish** (0.6.0 versiyada yangi) chop etish oynasisiz darhol PDF saqlaydi; uning sahifalari rasm, shuning uchun matnni belgilab bo‘lmaydi. Batafsil: [PDF yuklab olish](/docs/word-files#pdf-yuklab-olish).
 - **HTML eksport** hujjat stillari va sahifa o‘lchami bilan mustaqil HTML sahifani yuklab beradi.
 - **Word eksport** sahifa sozlamalari, kolontitullar va sahifa uzilishlari bilan haqiqiy Word faylini (`.docx`) yuklab beradi. Shu menyudagi “Word faylini ochish (.docx)” esa faylni muharrirga yuklaydi. Batafsil: [Word fayllari va katta hujjatlar](/docs/word-files).
 

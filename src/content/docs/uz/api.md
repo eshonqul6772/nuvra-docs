@@ -2,6 +2,8 @@
 
 nuvra eksport qiladigan hamma narsaning to‘liq ma’lumotnomasi: komponentlar, funksiyalar, konstantalar va tiplar.
 
+**0.6.0 versiyada yangi** deb belgilangan bandlar 0.6.0 versiyada qo‘shilgan; batafsil: [O‘zgarishlar tarixi](/docs/changelog).
+
 ## Eksportlar
 
 ```ts
@@ -12,6 +14,7 @@ import {
   Editor,
   buildDocx,
   buildTableOfContents,
+  collaboratorColor,
   compareDocuments,
   createCommentId,
   createHeaderFooter,
@@ -34,6 +37,7 @@ import {
   transliterate,
   uz,
   uzCyrl,
+  type Collaborator,
   type DocumentComment,
   type DocumentCommentReply,
   type DocumentComparison,
@@ -58,6 +62,7 @@ import {
   type PageSettings,
   type PageSizeKey,
   type PageWatermark,
+  type SelectionOffsets,
   type SlashCommand,
   type TableOfContentsEntry,
   type TableOfContentsOptions,
@@ -80,6 +85,7 @@ Asboblar paneli, sahifa yoki veb ko‘rinishi, holat paneli, qidirish va almasht
 | `author` | `string` | `''` | Yangi izohlar, javoblar va kuzatilgan o‘zgarishlarga muallif sifatida yoziladigan ism; batafsil: [Izohlar va solishtirish](/docs/review). |
 | `autofocus` | `boolean` | `false` | Muharrir tayyor bo‘lishi bilan kursorni hujjat oxiriga qo‘yadi. |
 | `canvasPadding` | `number \| string` | `50` | Sahifa yoki veb varaq atrofidagi kulrang bo‘shliq. |
+| `collaborators` | `Collaborator[]` | `[]` | **0.6.0 versiyada yangi.** Hujjatni tahrirlayotgan boshqa odamlar; ularning kursorlari va belgilashlari hujjat ustida chiziladi. Batafsil: [Birgalikda tahrirlash](/docs/collaboration). |
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | Birinchi ko‘rsatiladigan ko‘rinish; foydalanuvchi uni holat panelida almashtira oladi. |
 | `disabled` | `boolean` | `false` | Hujjatni faqat o‘qiladigan qiladi va barcha tahrirlash tugmalarini o‘chiradi. |
 | `height` | `number \| string` | `760` | Butun muharrir balandligi yoki `minHeight` va `maxHeight` oralig‘ida o‘sishi uchun `'auto'`. |
@@ -104,7 +110,7 @@ Sonlar piksel hisoblanadi; satrlar CSS uzunligi sifatida ishlatiladi. Boshqa atr
 | `v-model` | `string` | `''` | Hujjat HTML’i. Bo‘sh hujjat `''`; yozilganda qiymat qisqa pauzadan keyin yangilanadi. |
 | `v-model:page` | `PageSettings` | `createPageSettings()` | Qog‘oz o‘lchami, yo‘nalishi, hoshiyalar, kolontitullar, suv belgisi va sahifa raqamlash. |
 | `v-model:comments` | `DocumentComment[]` | — | Hujjatdagi izohlar. Bog‘langanda izoh vositalari yoqiladi; HTML’da faqat ularning langarlari saqlanadi. |
-| `v-model:trackChanges` | `boolean` | `false` | Tahrirlar kuzatilgan o‘zgarish sifatida yozilsinmi. Asboblar panelidagi “O‘zgarishlarni kuzatish” tugmasi ham uni almashtiradi. |
+| `v-model:trackChanges` | `boolean` | `false` | Tahrirlar kuzatilgan o‘zgarish sifatida yozilsinmi. Asboblar panelidagi “Taqriz” menyusidagi “O‘zgarishlarni kuzatish” bandi ham uni almashtiradi. |
 
 ### Hodisalar
 
@@ -114,6 +120,8 @@ Sonlar piksel hisoblanadi; satrlar CSS uzunligi sifatida ishlatiladi. Boshqa atr
 | `blur` | — | Tahrirlash maydoni fokusni yo‘qotdi; kutilayotgan o‘zgarishlar modelga yozib bo‘lingan. |
 | `uploadError` | `error: unknown` | Rasm tekshiruvdan o‘tmadi yoki yuklanmadi. |
 | `importError` | `error: unknown` | Word faylini o‘qib bo‘lmadi; hujjat o‘zgarishsiz qoladi. |
+| `exportError` | `error: unknown` | **0.6.0 versiyada yangi.** PDF’ni chizib bo‘lmadi, masalan brauzer bunga ruxsat bermadi; fayl yuklanmaydi. |
+| `selectionChange` | `selection: SelectionOffsets \| null` | **0.6.0 versiyada yangi.** Kursor yoki belgilash joyi o‘zgardi; kursor hujjatdan chiqsa `null`. Uni tahrirlayotgan boshqa odamlarga yuboring. |
 
 ### Slotlar
 
@@ -135,6 +143,7 @@ Template ref orqali mavjud.
 | `print` | `() => Promise<void>` | Brauzerning chop etish oynasini ochadi. |
 | `exportHtml` | `() => Promise<void>` | Hujjatni HTML sahifa sifatida yuklab beradi. |
 | `exportWord` | `() => Promise<void>` | Hujjatni Word fayli (`.docx`) sifatida yuklab beradi. |
+| `exportPdf` | `() => Promise<void>` | **0.6.0 versiyada yangi.** Hujjatni chop etish oynasisiz, sahifalaridan chizilgan PDF sifatida yuklab beradi; PDF matnini belgilab bo‘lmaydi. Xatolar `exportError` bilan chiqadi. Batafsil: [Word fayllari va katta hujjatlar](/docs/word-files#pdf-yuklab-olish). |
 | `engine` | `DocumentEngine \| null` | Murakkab integratsiyalar uchun tahrirlash dvigateli; muharrir yuklanmaguncha `null`. |
 
 ## Editor
@@ -318,6 +327,14 @@ function createCommentId(): string;
 ```
 
 Izoh yoki javob uchun yangi tasodifiy identifikator, HTML atributida ishlatsa bo‘ladi, masalan `cmfz3k1a9x2b7q`.
+
+### collaboratorColor
+
+```ts
+function collaboratorColor(collaborator: Pick<Collaborator, 'id' | 'color'>): string;
+```
+
+**0.6.0 versiyada yangi.** Muharrir hamkorni chizadigan rang: uning o‘z `color` qiymati yoki `id` bo‘yicha tanlanadigan sakkiz rangdan biri — bir xil id uchun doim bir xil. Muharrir yonidagi odamlar ro‘yxati uchun qulay.
 
 ### readOutline
 
@@ -526,7 +543,7 @@ interface DocxSource {
 interface DocxImport {
   /** Hujjat mazmuni, HTML ko‘rinishida. */
   html: string;
-  /** Hujjat oxirgi bo‘limining sahifa sozlamalari. */
+  /** Hujjat birinchi bo‘limining sahifa sozlamalari; keyingi bo‘limlar bo‘lim uzilishlari sifatida keladi. */
   page: PageSettings;
 }
 ```
@@ -587,6 +604,32 @@ interface SlashCommand {
 }
 ```
 
+### Collaborator, SelectionOffsets
+
+**0.6.0 versiyada yangi.** Batafsil: [Birgalikda tahrirlash](/docs/collaboration).
+
+```ts
+/** Hujjat bo‘ylab belgi pozitsiyalari ko‘rinishidagi belgilash; teng pozitsiyalar — kursor. */
+interface SelectionOffsets {
+  /** Belgilash boshlangan joy. */
+  anchor: number;
+  /** Kursor turgan joy. */
+  focus: number;
+}
+
+/** Xuddi shu hujjatni tahrirlayotgan boshqa odam. */
+interface Collaborator {
+  /** Odam yoki ulanishning o‘zgarmas identifikatori. */
+  id: string;
+  /** Kursor yonida ko‘rinadigan ism. */
+  name: string;
+  /** Kursor va belgilashning CSS rangi; berilmasa, id bo‘yicha tanlanadi. */
+  color?: string;
+  /** Odamning kursori yoki belgilashi qayerda, hujjatda bo‘lmasa `null`. */
+  selection: SelectionOffsets | null;
+}
+```
+
 ### IconName
 
 Muharrirning o‘rnatilgan ikonkalari nomlari birlashmasi, masalan `'braces'`, `'calendar-days'`, `'file-text'`, `'signature'` yoki `'table-of-contents'`. Kod muharriringizning tip maslahatlari hammasini ko‘rsatadi.
@@ -607,6 +650,7 @@ Muharrirning o‘rnatilgan ikonkalari nomlari birlashmasi, masalan `'braces'`, `
 | `setListNumbering(style)` | Kursor turgan raqamli ro‘yxatni `'default'` va `'legal'` raqamlash o‘rtasida almashtiradi. |
 | `insertTable(rows, cols, withHeaderRow)` | Jadval qo‘shadi. |
 | `insertPageBreak()`, `insertHorizontalRule()` | Sahifa uzilishi yoki gorizontal chiziq qo‘shadi. |
+| `insertSectionBreak(orientation: 'portrait' \| 'landscape')` | **0.6.0 versiyada yangi.** Bo‘lim uzilishi qo‘shadi; undan keyingi sahifalar `orientation` yo‘nalishiga buriladi. Batafsil: [Word fayllari va katta hujjatlar](/docs/word-files#turli-yonalishdagi-sahifalar). |
 | `insertFootnote(text: string)` | Belgilangan joyga snoska havolasini matni bilan qo‘shadi; havola elementini yoki hech narsa qo‘shilmasa `null` qaytaradi. |
 | `setFootnoteText(element, text: string)` | Snoska matnini o‘zgartiradi (2000 belgigacha). |
 | `removeFootnote(element)` | Snoska havolasini matni bilan birga olib tashlaydi. |
@@ -619,6 +663,9 @@ Muharrirning o‘rnatilgan ikonkalari nomlari birlashmasi, masalan `'braces'`, `
 | `undo()`, `redo()` | Bekor qilish va qaytarish. |
 | `focus(position?: 'start' \| 'end')` | Hujjatga fokus beradi. |
 | `getHTML()` | Hujjatning toza HTML’i. |
+| `setContent(html: string, options?: { keepSelection?: boolean })` | Hujjatni almashtiradi va bekor qilish tarixini tozalaydi. **0.6.0 versiyada yangi:** `keepSelection` bilan muharrir fokusda bo‘lsa, kursor o‘sha belgi pozitsiyasida qoladi; `v-model` shundan foydalanadi. |
+| `getSelectionOffsets()` | **0.6.0 versiyada yangi.** Belgilash `SelectionOffsets` ko‘rinishida yoki `null`. |
+| `getOffsetRects(offsets: SelectionOffsets)` | **0.6.0 versiyada yangi.** Ikki pozitsiya orasidagi matnning viewport’dagi to‘rtburchaklari (`DOMRect[]`); kursor uchun kengligi nol bo‘lgan bitta to‘rtburchak qaytadi. |
 
 Har bir buyruq bitta bekor qilinadigan qadam bo‘ladi va yozishdagidek `v-model` ni yangilaydi.
 

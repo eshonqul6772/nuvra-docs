@@ -72,6 +72,7 @@ Bo‘sh maydonning qiymati `''` bo‘ladi, shuning uchun odatiy “majburiy mayd
 
 ## Keyingi qadamlar
 
+- [Sinov maydoni](/playground) — `DocumentEditor` props’ini jonli sinab ko‘ring va tayyor kodni nusxalang.
 - [Foydalanish](/docs/usage) — sahifa sozlamalari, ko‘rinishlar, o‘lchamlar, rasmlar, chop etish va eksport.
 - [Tillar](/docs/translations) — interfeysni o‘zbek, ingliz yoki rus tilida ko‘rsatish.
 - [Ranglar va mavzu](/docs/theming) — ranglarni o‘zgartirish va qorong‘i mavzuni yoqish.

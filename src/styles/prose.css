@@ -178,35 +178,11 @@
   color: var(--shiki-dark);
 }
 
-/* Copy button added to docs code blocks. */
+/* Code block with a copy button over its top-right corner (see copy-button.vue); the button shows on hover. */
 .code-block {
   position: relative;
 }
 
-.code-block__copy {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  color: var(--color-text-soft);
-  background: var(--color-bg-elevated);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0;
-  cursor: pointer;
-  transition:
-    opacity 140ms ease,
-    color 140ms ease;
-}
-
-.code-block:hover .code-block__copy,
-.code-block__copy:focus-visible {
+.code-block:hover .copy-button {
   opacity: 1;
-}
-
-.code-block__copy:hover {
-  color: var(--color-text);
 }

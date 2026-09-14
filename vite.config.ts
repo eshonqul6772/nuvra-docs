@@ -7,19 +7,12 @@ import anchor from 'markdown-it-anchor';
 import Markdown from 'unplugin-vue-markdown/vite';
 import { defineConfig } from 'vite';
 
+import { slugify } from './src/content/docs/slugify.ts';
+
 /** Version of the installed nuvra package, shown on the site. */
 const NUVRA_VERSION: string = JSON.parse(
   readFileSync(new URL('./node_modules/nuvra/package.json', import.meta.url), 'utf8')
 ).version;
-
-/** Heading ids: lower-case words joined by dashes; Uzbek apostrophes are dropped so ids stay readable. */
-const slugify = (text: string) =>
-  text
-    .trim()
-    .toLowerCase()
-    .replace(/[‘’'`ʻʼ]/g, '')
-    .replace(/[^\p{L}\p{N}]+/gu, '-')
-    .replace(/^-+|-+$/g, '');
 
 /**
  * With NUVRA_LOCAL=1 the site runs against the sources of the neighbouring `nuvra` checkout instead of the published

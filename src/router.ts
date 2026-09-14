@@ -11,6 +11,7 @@ export const router = createRouter({
     { path: '/', name: 'home', component: HomePage },
     { path: '/docs', redirect: '/docs/getting-started' },
     { path: '/docs/:slug', name: 'docs', component: () => import('./pages/docs-page.vue'), props: true },
+    { path: '/playground', name: 'playground', component: () => import('./pages/playground-page.vue') },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('./pages/not-found-page.vue') }
   ],
   scrollBehavior(to, from, savedPosition) {

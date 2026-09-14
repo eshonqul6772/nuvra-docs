@@ -4,16 +4,31 @@ import type { SiteMessages } from './en';
 export const uz: SiteMessages = {
   meta: {
     title: 'nuvra — Vue 3 uchun Word uslubidagi hujjat muharriri',
-    docsTitle: 'nuvra hujjatlari'
+    docsTitle: 'nuvra hujjatlari',
+    playgroundTitle: 'Sinov maydoni · nuvra'
   },
   nav: {
     main: 'Asosiy menyu',
     docs: 'Hujjatlar',
+    playground: 'Sinov maydoni',
     demo: 'Demo',
+    search: 'Qidirish',
     language: 'Til',
     theme: 'Rang sxemasini almashtirish',
     github: 'nuvra GitHub’da',
     menu: 'Hujjatlar menyusi'
+  },
+  search: {
+    title: 'Hujjatlardan qidirish',
+    placeholder: 'Maqolalar, props, hodisalar…',
+    results: 'Qidiruv natijalari',
+    hint: 'Qo‘llanma, retseptlar va API ma’lumotnomasidan qidiring.',
+    loading: 'Maqolalar yuklanmoqda…',
+    empty: (query: string) => `“${query}” bo‘yicha hech narsa topilmadi.`,
+    count: (count: number) => `${count} ta natija`,
+    navigate: 'tanlash',
+    select: 'ochish',
+    close: 'Yopish'
   },
   hero: {
     badge: 'Vue 3 · UI kutubxonalarsiz',
@@ -48,6 +63,14 @@ export const uz: SiteMessages = {
       text: 'Hujjatlarni yuridik bo‘lim ham tasdiqlashi kerakmi? Istalgan matnni belgilab, “Izoh qo‘shish” tugmasi bilan o‘z fikringizni yozing.'
     },
     fileName: 'Xizmat ko‘rsatish shartnomasi',
+    samples: {
+      label: 'Namuna hujjatlar',
+      contract: 'Xizmat ko‘rsatish shartnomasi',
+      letter: 'Rasmiy xat',
+      order: 'Buyruq',
+      application: 'Ariza',
+      certificate: 'Ish joyidan ma’lumotnoma'
+    },
     fieldTitle: 'Yangi rol',
     nameLabel: 'Rol nomi',
     nameValue: 'Kontent muharriri',
@@ -143,9 +166,40 @@ export const uz: SiteMessages = {
     next: 'Keyingi',
     menu: 'Menyu',
     copy: 'Nusxalash',
+    copyCode: 'Kodni nusxalash',
     copied: 'Nusxalandi',
     missingTitle: 'Bunday sahifa yo‘q',
     missingText: 'Menyudan mavzuni tanlang.'
+  },
+  playground: {
+    eyebrow: 'Sinov maydoni',
+    title: 'Props’ni sinab ko‘ring va kodni nusxalang.',
+    lead: 'Paneldagi har bir o‘zgarish muharrirga darhol qo‘llanadi, pastdagi kod esa doim ekranda ko‘rganingizga mos keladi.',
+    editor: 'Muharrir',
+    controls: 'Props',
+    viewMode: 'Dastlabki ko‘rinish',
+    viewPage: 'Sahifa',
+    viewWeb: 'Veb',
+    height: 'Balandlik, pikselda',
+    heightAuto: 'Matn bilan birga o‘ssin',
+    locale: 'Interfeys tili',
+    disabled: 'Faqat o‘qish uchun',
+    ruler: 'Varaq ustidagi chizg‘ich',
+    maxLength: 'Belgilar chegarasi, 0 — cheklovsiz',
+    placeholder: 'Bo‘sh hujjatdagi matn',
+    placeholderValue: 'Hujjatingizni yozishni boshlang…',
+    printTitle: 'Chop etish sarlavhasi va fayl nomi',
+    author: 'Izoh va o‘zgarishlar muallifi',
+    bindings: 'Bog‘lanishlar',
+    comments: 'v-model:comments’ni bog‘lash',
+    commentsHint: 'Izoh vositalarini yoqadi.',
+    trackChanges: 'v-model:trackChanges’ni bog‘lash',
+    trackChangesOn: 'O‘zgarishlarni yozib borish',
+    variables: 'Namuna o‘zgaruvchilarni berish',
+    content: 'Hujjat',
+    loadSample: 'Namunani yuklash',
+    clear: 'Tozalash',
+    code: 'Kod'
   },
   notFound: {
     title: 'Sahifa topilmadi',

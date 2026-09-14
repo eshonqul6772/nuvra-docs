@@ -106,6 +106,19 @@ a:focus-visible,
   outline-offset: 2px;
 }
 
+/* Text read by assistive technology but not shown. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
 /* Kicker above section titles. */
 .eyebrow {
   margin: 0;
