@@ -1,0 +1,189 @@
+/*
+ * Controls around the editors of the examples: toolbars of buttons, fields and output panels. The examples use these
+ * class names so their code stays about nuvra; every rule is scoped to the demo stage of the example page.
+ */
+.example-stage {
+  display: grid;
+  gap: 14px;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.example-stage .example-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.example-stage .example-bar--spread {
+  justify-content: space-between;
+}
+
+.example-stage .example-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text);
+  background: var(--color-bg-elevated);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.example-stage .example-button:hover:not(:disabled) {
+  border-color: var(--color-text-faint);
+}
+
+.example-stage .example-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.example-stage .example-button.is-active,
+.example-stage .example-button--primary {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+  background: var(--color-accent-soft);
+}
+
+.example-stage .example-button:focus-visible,
+.example-stage .example-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.example-stage .example-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.example-stage .example-field--inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.example-stage .example-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 9px;
+  color: var(--color-text);
+  background: var(--color-bg-elevated);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.example-stage textarea.example-input {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.example-stage .example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.example-stage .example-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+
+.example-stage .example-panel {
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg-elevated);
+}
+
+.example-stage .example-panel > h3 {
+  margin: 0 0 10px;
+  color: var(--color-text-faint);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.example-stage .example-output {
+  max-height: 260px;
+  margin: 0;
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text-soft);
+  background: var(--color-code-bg);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.example-stage .example-preview {
+  padding: 18px 22px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: #1d1b17;
+  background: #fff;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.example-stage .example-note {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 13px;
+}
+
+.example-stage .example-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.example-stage .example-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.example-stage .example-list li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .example-stage .example-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -5,11 +5,13 @@ export const uz: SiteMessages = {
   meta: {
     title: 'nuvra — Vue 3 uchun Word uslubidagi hujjat muharriri',
     docsTitle: 'nuvra hujjatlari',
-    playgroundTitle: 'Sinov maydoni · nuvra'
+    playgroundTitle: 'Sinov maydoni · nuvra',
+    examplesTitle: 'Misollar · nuvra'
   },
   nav: {
     main: 'Asosiy menyu',
     docs: 'Hujjatlar',
+    examples: 'Misollar',
     playground: 'Sinov maydoni',
     demo: 'Demo',
     search: 'Qidirish',
@@ -170,6 +172,28 @@ export const uz: SiteMessages = {
     copied: 'Nusxalandi',
     missingTitle: 'Bunday sahifa yo‘q',
     missingText: 'Menyudan mavzuni tanlang.'
+  },
+  examples: {
+    getStarted: 'Boshlash',
+    overview: 'Umumiy ko‘rinish',
+    breadcrumb: 'Yo‘l',
+    filter: 'Misollarni saralash',
+    reset: 'Qayta boshlash',
+    pager: 'Boshqa misollar',
+    previous: 'Oldingisi',
+    next: 'Keyingisi',
+    lines: (count: number) => `${count} qator`,
+    eyebrow: 'Misollar',
+    title: 'Ishlashini ko‘ring, keyin kodni oling.',
+    lead: (count: number) =>
+      `Vue ilovasida nuvra’dan foydalanishning ${count} ta jonli misoli. Har biri shu sahifaning o‘zida ishlaydi, ostidagi kod esa aynan ishlayotgan kodning o‘zi.`,
+    all: 'Barchasi',
+    menu: 'Misollar',
+    demo: 'Jonli namoyish',
+    guide: 'Qo‘llanmani o‘qish',
+    loading: 'Misol yuklanmoqda…',
+    missingTitle: 'Bunday misol yo‘q',
+    missingText: 'Ehtimol, uning nomi o‘zgargan.'
   },
   playground: {
     eyebrow: 'Sinov maydoni',

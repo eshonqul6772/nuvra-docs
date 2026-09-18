@@ -64,7 +64,7 @@
       "linter": {
         "rules": {
           "correctness": { "noUnusedImports": "off", "noUnusedVariables": "off" },
-          "style": { "useFilenamingConvention": "off" }
+          "style": { "useFilenamingConvention": "off", "useImportType": "off" }
         }
       }
     },

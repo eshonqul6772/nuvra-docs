@@ -47,6 +47,13 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown));
           {{ messages.nav.docs }}
         </RouterLink>
         <RouterLink
+          to="/examples"
+          class="header__link"
+          :class="{ 'is-active': route.path.startsWith('/examples') }"
+        >
+          {{ messages.nav.examples }}
+        </RouterLink>
+        <RouterLink
           to="/playground"
           class="header__link header__link--medium"
           :class="{ 'is-active': route.path === '/playground' }"

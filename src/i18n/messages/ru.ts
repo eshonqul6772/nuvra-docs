@@ -5,11 +5,13 @@ export const ru: SiteMessages = {
   meta: {
     title: 'nuvra — редактор документов в стиле Word для Vue 3',
     docsTitle: 'Документация nuvra',
-    playgroundTitle: 'Песочница · nuvra'
+    playgroundTitle: 'Песочница · nuvra',
+    examplesTitle: 'Примеры · nuvra'
   },
   nav: {
     main: 'Главное меню',
     docs: 'Документация',
+    examples: 'Примеры',
     playground: 'Песочница',
     demo: 'Демо',
     search: 'Поиск',
@@ -176,6 +178,28 @@ export const ru: SiteMessages = {
     copied: 'Скопировано',
     missingTitle: 'Такой страницы нет',
     missingText: 'Выберите тему в меню.'
+  },
+  examples: {
+    getStarted: 'Начало',
+    overview: 'Обзор',
+    breadcrumb: 'Навигационная цепочка',
+    filter: 'Фильтр примеров',
+    reset: 'Сбросить',
+    pager: 'Другие примеры',
+    previous: 'Предыдущий',
+    next: 'Следующий',
+    lines: (count: number) => `строк: ${count}`,
+    eyebrow: 'Примеры',
+    title: 'Посмотрите в работе, затем возьмите код.',
+    lead: (count: number) =>
+      `${count} живых примеров nuvra во Vue-приложении. Каждый работает прямо на странице, а код под ним — ровно тот, что выполняется.`,
+    all: 'Все',
+    menu: 'Примеры',
+    demo: 'Живая демонстрация',
+    guide: 'Читать руководство',
+    loading: 'Загрузка примера…',
+    missingTitle: 'Такого примера нет',
+    missingText: 'Возможно, он был переименован.'
   },
   playground: {
     eyebrow: 'Песочница',

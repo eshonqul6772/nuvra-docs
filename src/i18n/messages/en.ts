@@ -3,11 +3,13 @@ export const en = {
   meta: {
     title: 'nuvra — Word-style document editor for Vue 3',
     docsTitle: 'nuvra docs',
-    playgroundTitle: 'Playground · nuvra'
+    playgroundTitle: 'Playground · nuvra',
+    examplesTitle: 'Examples · nuvra'
   },
   nav: {
     main: 'Main navigation',
     docs: 'Docs',
+    examples: 'Examples',
     playground: 'Playground',
     demo: 'Demo',
     search: 'Search',
@@ -168,6 +170,28 @@ export const en = {
     copied: 'Copied',
     missingTitle: 'This page doesn’t exist',
     missingText: 'Pick a topic from the menu.'
+  },
+  examples: {
+    getStarted: 'Get started',
+    overview: 'Overview',
+    breadcrumb: 'Breadcrumb',
+    filter: 'Filter the examples',
+    reset: 'Reset',
+    pager: 'More examples',
+    previous: 'Previously',
+    next: 'Next up',
+    lines: (count: number) => `${count} lines`,
+    eyebrow: 'Examples',
+    title: 'See it working, then copy the code.',
+    lead: (count: number) =>
+      `${count} live examples of nuvra in a Vue app. Every one runs right on the page, and the code under it is exactly the code that runs.`,
+    all: 'All',
+    menu: 'Examples',
+    demo: 'Live demo',
+    guide: 'Read the guide',
+    loading: 'Loading the example…',
+    missingTitle: 'This example doesn’t exist',
+    missingText: 'It may have been renamed.'
   },
   playground: {
     eyebrow: 'Playground',

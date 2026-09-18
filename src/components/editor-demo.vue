@@ -2,13 +2,11 @@
 import { computed, reactive, ref, watch } from 'vue';
 import {
   DocumentEditor,
-  type DocumentTemplateId,
   Editor,
   type EditorLocaleCode,
   type PageSettings,
   createPageSettings,
-  editorLocales,
-  getDocumentTemplate
+  editorLocales
 } from 'nuvra';
 
 import { locale, messages } from '../i18n';
@@ -16,18 +14,10 @@ import { type SiteMessages, en } from '../i18n/messages/en';
 import { ru } from '../i18n/messages/ru';
 import { uz } from '../i18n/messages/uz';
 
-/**
- * Live nuvra editors: a full document in the page view with a gallery of sample documents, and the same engine as a
- * form field.
- */
+/** Live nuvra editors: a full document in the page view, and the same engine as a form field. */
 defineOptions({ name: 'EditorDemo' });
 
 type DemoTab = 'document' | 'field';
-/** A sample of the gallery: the site's own contract, or one of nuvra's built-in document templates. */
-type SampleId = 'contract' | Exclude<DocumentTemplateId, 'act'>;
-
-/** Samples offered above the document, in gallery order. */
-const SAMPLES: readonly SampleId[] = ['contract', 'letter', 'order', 'application', 'certificate'];
 
 /** Accent colours offered for the editors; the first one is nuvra's default. */
 const ACCENTS = [
@@ -52,8 +42,6 @@ const sampleComments = (site: SiteMessages) => [
 ];
 /** Comments per language, next to the document they belong to. */
 const comments = reactive({ en: sampleComments(en), uz: sampleComments(uz), ru: sampleComments(ru) });
-/** Sample shown in each language's document. */
-const samples = reactive<Record<keyof typeof documents, SampleId>>({ en: 'contract', uz: 'contract', ru: 'contract' });
 /** Tracked changes start off; visitors switch them on with the toolbar button. */
 const trackChanges = ref(false);
 const description = ref('');
@@ -63,25 +51,8 @@ watch(locale, value => {
   editorLocale.value = value;
 });
 
-const sample = computed(() => samples[locale.value]);
-/** Variables of the shown sample; the built-in templates label theirs in the editor's language. */
-const variables = computed(() =>
-  sample.value === 'contract'
-    ? messages.value.demo.variables
-    : getDocumentTemplate(sample.value, editorLocale.value).variables
-);
-const fileName = computed(() => messages.value.demo.samples[sample.value]);
-
-/**
- * Loads a sample into the document of the site language. Built-in templates arrive in the editor's language with
- * their variables kept as chips, ready to be filled; only the contract carries the sample comment.
- */
-const loadSample = (id: SampleId) => {
-  const site = { en, uz, ru }[locale.value];
-  samples[locale.value] = id;
-  documents[locale.value] = id === 'contract' ? site.demo.sample : getDocumentTemplate(id, editorLocale.value).html;
-  comments[locale.value] = id === 'contract' ? sampleComments(site) : [];
-};
+const variables = computed(() => messages.value.demo.variables);
+const fileName = computed(() => messages.value.demo.fileName);
 </script>
 
 <template>
@@ -150,21 +121,6 @@ const loadSample = (id: SampleId) => {
         <span />
         <span />
         <em>{{ tab === 'document' ? `${fileName}.docx` : messages.demo.fieldTitle }}</em>
-      </div>
-
-      <div v-if="tab === 'document'" class="demo__samples" role="group" :aria-label="messages.demo.samples.label">
-        <span class="demo__samples-label" aria-hidden="true">{{ messages.demo.samples.label }}</span>
-        <button
-          v-for="id in SAMPLES"
-          :key="id"
-          type="button"
-          class="demo__sample"
-          :class="{ 'is-active': sample === id }"
-          :aria-pressed="sample === id"
-          @click="loadSample(id)"
-        >
-          {{ messages.demo.samples[id] }}
-        </button>
       </div>
 
       <div v-if="tab === 'document'" class="demo__body demo__body--document">
@@ -266,65 +222,6 @@ const loadSample = (id: SampleId) => {
   font-style: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* Sample gallery: one row that scrolls sideways on phones instead of wrapping into several. */
-.demo__samples {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--color-border);
-  scrollbar-width: thin;
-}
-
-.demo__samples-label {
-  flex: 0 0 auto;
-  margin-right: 4px;
-  color: var(--color-text-faint);
-  font-size: 13px;
-}
-
-.demo__sample {
-  flex: 0 0 auto;
-  height: 30px;
-  padding: 0 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-text-soft);
-  background: var(--color-bg-elevated);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 550;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    color 140ms ease,
-    border-color 140ms ease,
-    background-color 140ms ease;
-}
-
-.demo__sample:hover {
-  border-color: var(--color-border-strong);
-  color: var(--color-text);
-}
-
-.demo__sample:focus-visible {
-  outline: 2px solid var(--demo-accent);
-  outline-offset: 2px;
-}
-
-.demo__sample.is-active {
-  border-color: color-mix(in srgb, var(--demo-accent) 55%, var(--color-border));
-  color: var(--color-text);
-  background: color-mix(in srgb, var(--demo-accent) 12%, var(--color-bg-elevated));
-}
-
-@media (max-width: 640px) {
-  .demo__samples-label {
-    display: none;
-  }
 }
 
 /* The chosen accent drives nuvra's primary colours; tints mix with the editor background, so dark mode works too. */
