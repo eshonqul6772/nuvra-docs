@@ -2,6 +2,21 @@
 
 Notable changes of each nuvra version, newest first.
 
+## Unreleased
+
+### Languages
+
+- **Breaking:** the Uzbek Cyrillic interface is removed: the `uzCyrl` locale and the `'uz-Cyrl'` code of `EditorLocaleCode` and `NumberWordsLocale` are gone. The interface ships in Uzbek, English and Russian; `transliterate` and the Latin / Cyrillic conversion of the document text stay.
+
+### PDF import
+
+- "Open PDF file (.pdf)" in the "More" menu and `importPdf(file)` on a template ref turn a PDF into an editable document: paragraphs, headings, lists, tables, pictures, the running header and footer and the page setup are rebuilt from the layout of the pages. "Open Word file (.docx)" accepts PDF files too. Scanned pages come in as their pictures. The file is read in the browser and the reader loads on first use. See [Opening a PDF](/docs/word-files#opening-a-pdf).
+- `readPdf` reads a PDF in your own code; `PdfImportError` (with `reason` `'invalid'`, `'encrypted'` or `'empty'`) reports a file that cannot be opened, also through the `importError` event.
+
+### Fixes
+
+- The web view no longer flickers endlessly in fullscreen at some window sizes and zoom levels, where its scrollbars kept appearing and disappearing.
+
 ## 0.6.0
 
 ### Export and long documents

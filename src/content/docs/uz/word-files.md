@@ -1,6 +1,6 @@
 # Word fayllari va katta hujjatlar
 
-Bu sahifada Word fayllarini ochish va saqlash, PDF yuklab olish hamda katta hujjatlar uchun vositalar tushuntiriladi: snoskalar, ko‘p darajali raqamlash, sahifa raqamlash sozlamalari, turli yo‘nalishdagi sahifalar, mundarija va navigatsiya paneli.
+Bu sahifada Word fayllarini ochish va saqlash, PDF ochish va yuklab olish hamda katta hujjatlar uchun vositalar tushuntiriladi: snoskalar, ko‘p darajali raqamlash, sahifa raqamlash sozlamalari, turli yo‘nalishdagi sahifalar, mundarija va navigatsiya paneli.
 
 ## Word fayllari (.docx)
 
@@ -83,6 +83,71 @@ const { html, page } = await readDocx(await file.arrayBuffer());
 | Kolontitullar | Faqat matni chap, markaz va o‘ng qismlarga bo‘lib olinadi; format va rasmlar tushib qoladi. |
 | Suv belgisi, matn maydonlari, shakllar | Import qilinmaydi. |
 | Maydonlar (fields) | Kolontituldagi PAGE va NUMPAGES `{page}` va `{pages}` ga aylanadi; boshqa maydonlarning ko‘rsatgan matni qoladi. |
+
+## PDF faylini ochish
+
+“Yana” menyusidagi “PDF faylini ochish (.pdf)” bandi PDF tanlatadi va hujjatni uning mazmuni bilan tahrirlanadigan matn sifatida almashtiradi; keyin uni Word sifatida saqlash mumkin. “Word faylini ochish (.docx)” bandi ham PDF fayllarni qabul qiladi. Word faylidagidek qog‘oz o‘lchami, yo‘nalishi, hoshiyalar va kolontitullar fayldan olinadi, joriy suv belgisi saqlanib qoladi, mazmun almashtirilishi esa bitta bekor qilinadigan qadam bo‘ladi.
+
+Koddan `importPdf(file)` bilan ochiladi. O‘qib bo‘lmagan fayl hujjatni o‘zgartirmaydi va `importError` hodisasini chiqaradi:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor, PdfImportError } from 'nuvra';
+
+const html = ref('');
+const editor = ref<InstanceType<typeof DocumentEditor>>();
+
+const open = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) void editor.value?.importPdf(file);
+};
+
+const onImportError = (error: unknown) => {
+  // `reason`: 'invalid', 'encrypted' yoki 'empty'.
+  if (error instanceof PdfImportError) console.error(error.reason);
+};
+</script>
+
+<template>
+  <input type="file" accept=".pdf" @change="open" />
+  <DocumentEditor ref="editor" v-model="html" @import-error="onImportError" />
+</template>
+```
+
+PDF paragraflarni emas, joylashuvi belgilangan gliflarni saqlaydi, shuning uchun hujjat tuzilmasi sahifadagi joylashuvdan qayta tiklanadi:
+
+- paragraflar tekislash, birinchi qator chekinishi va oralig‘i bilan; sarlavhalar shrift o‘lchamiga qarab;
+- belgili va raqamli ro‘yxatlar;
+- tekis ustunlardan jadvallar: PDF chegara chizgan bo‘lsa chegarali, aks holda chegarasiz imzo jadvali sifatida;
+- qalin, kursiv, rang, shrift o‘lchami va shrift;
+- sahifalar yuqorisi va pastida takrorlanadigan qatorlar kolontitulga aylanadi, ulardagi sahifa raqamlari `{page}` va `{pages}` bo‘ladi;
+- rasmlar data URL sifatida joylanadi (`uploadImage` orqali o‘tmaydi);
+- qog‘oz o‘lchami va hoshiyalar.
+
+Joylangan va standart shriftlardagi lotin va kirill matni o‘qiladi, o‘zbek harflari ham.
+
+Fayl to‘liq brauzerda o‘qiladi: hech narsa serverga yuborilmaydi, sahifalar rasmga chizilmaydi, o‘quvchi kod esa hech qanday kutubxonaga bog‘liq emas va faqat birinchi PDF ochilganda yuklanadi. Har bir sahifadan keyin boshqaruv brauzerga qaytariladi, shuning uchun uzun hujjat sahifani qotirib qo‘ymaydi.
+
+`readPdf` natijani muharrirsiz qaytaradi:
+
+```ts
+import { readPdf } from 'nuvra';
+
+const { html, page } = await readPdf(await file.arrayBuffer());
+```
+
+### Cheklovlar
+
+| PDF mazmuni | Nima bo‘ladi |
+| --- | --- |
+| Skanerlangan sahifalar | Rasm sifatida keladi; matnini o‘qish uchun OCR kerak bo‘lardi. |
+| Shifrlangan fayllar | Ochilmaydi; `importError`, sababi `'encrypted'`. |
+| PDF emas yoki tiklab bo‘lmas darajada buzilgan | `importError`, sababi `'invalid'`. |
+| Na matn, na rasm yo‘q | `importError`, sababi `'empty'`. |
+| Murakkab joylashuv | Bir nechta ustun, rasm ustidagi matn va g‘ayrioddiy jadvallar joylashuv imkon bergancha tiklanadi; natijani tekshirib chiqing. |
+| Formalar, annotatsiyalar, havolalar, xatcho‘plar | Import qilinmaydi. |
+| Vektor chizmalar va diagrammalar | Import qilinmaydi, jadval chegaralaridan tashqari. |
 
 ## PDF yuklab olish
 

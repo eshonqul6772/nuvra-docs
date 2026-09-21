@@ -12,6 +12,7 @@ import {
   DocumentEditor,
   DocumentForm,
   Editor,
+  PdfImportError,
   buildDocx,
   buildTableOfContents,
   collaboratorColor,
@@ -32,11 +33,11 @@ import {
   parseAmount,
   readDocx,
   readOutline,
+  readPdf,
   ru,
   setEditorLocale,
   transliterate,
   uz,
-  uzCyrl,
   type Collaborator,
   type DocumentComment,
   type DocumentCommentReply,
@@ -62,6 +63,8 @@ import {
   type PageSettings,
   type PageSizeKey,
   type PageWatermark,
+  type PdfImport,
+  type PdfImportErrorReason,
   type SelectionOffsets,
   type SlashCommand,
   type TableOfContentsEntry,
@@ -89,7 +92,7 @@ import 'nuvra/style.css';
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | Режим, показываемый первым; пользователь может переключить его в строке состояния. |
 | `disabled` | `boolean` | `false` | Делает документ доступным только для чтения и отключает все элементы редактирования. |
 | `height` | `number \| string` | `760` | Высота всего редактора или `'auto'`, чтобы он рос вместе с содержимым в пределах от `minHeight` до `maxHeight`. |
-| `locale` | `EditorLocaleInput` | — | Язык интерфейса: `uz`, `uzCyrl`, `en`, `ru` или их коды; по умолчанию — общий язык приложения. |
+| `locale` | `EditorLocaleInput` | — | Язык интерфейса: `uz`, `en`, `ru` или их коды; по умолчанию — общий язык приложения. |
 | `maxHeight` | `number \| string` | `600` | Наибольшая высота редактора с автовысотой; более длинные документы прокручиваются внутри него. |
 | `maxImageSizeMb` | `number` | `10` | Наибольший допустимый размер файла изображения в мегабайтах. |
 | `maxLength` | `number` | `0` | Наибольшее число символов; `0` — без ограничений. |
@@ -119,7 +122,7 @@ import 'nuvra/style.css';
 | `focus` | — | Область редактирования получила фокус. |
 | `blur` | — | Область редактирования потеряла фокус; ожидающие обновления модели уже записаны. |
 | `uploadError` | `error: unknown` | Изображение не прошло проверку или его загрузка не удалась. |
-| `importError` | `error: unknown` | Не удалось прочитать файл Word; документ остаётся без изменений. |
+| `importError` | `error: unknown` | Не удалось прочитать файл Word или PDF; документ остаётся без изменений. У ошибок PDF есть `reason`: `'invalid'`, `'encrypted'` или `'empty'`. |
 | `exportError` | `error: unknown` | **Новое в 0.6.0.** Не удалось отрисовать PDF, например потому что браузер этого не разрешает; файл не скачивается. |
 | `selectionChange` | `selection: SelectionOffsets \| null` | **Новое в 0.6.0.** Курсор или выделение переместились; `null`, когда они покинули документ. Передавайте это значение другим людям, редактирующим документ. |
 
@@ -140,6 +143,7 @@ import 'nuvra/style.css';
 | `insertVariable` | `(name: string) => void` | Вставляет переменную шаблона в место выделения. |
 | `updateTableOfContents` | `() => Promise<void>` | Вставляет оглавление в место выделения или обновляет существующее. |
 | `importWord` | `(file: File) => Promise<void>` | Заменяет документ и параметры страницы содержимым файла `.docx` за один шаг отмены. Ошибки передаются через `importError`. |
+| `importPdf` | `(file: File) => Promise<void>` | Заменяет документ и параметры страницы содержимым файла `.pdf` в виде редактируемого текста за один шаг отмены. Отсканированные страницы приходят как изображения. Ошибки передаются через `importError`. См. [Открытие PDF](/docs/word-files#открытие-pdf). |
 | `print` | `() => Promise<void>` | Открывает диалог печати браузера. |
 | `exportHtml` | `() => Promise<void>` | Скачивает документ как HTML-страницу. |
 | `exportWord` | `() => Promise<void>` | Скачивает документ как файл Word (`.docx`). |
@@ -157,7 +161,7 @@ import 'nuvra/style.css';
 | `autofocus` | `boolean` | `false` | Ставит курсор в конец содержимого, когда редактор готов. |
 | `canvasPadding` | `number \| string` | `50` | Серое пространство вокруг листа. |
 | `disabled` | `boolean` | `false` | Делает содержимое доступным только для чтения и отключает панель инструментов. |
-| `locale` | `EditorLocaleInput` | — | Язык интерфейса: `uz`, `uzCyrl`, `en`, `ru` или их коды; по умолчанию — общий язык приложения. |
+| `locale` | `EditorLocaleInput` | — | Язык интерфейса: `uz`, `en`, `ru` или их коды; по умолчанию — общий язык приложения. |
 | `maxHeight` | `number \| string` | `600` | Высота, при которой поле перестаёт расти и начинает прокручиваться. |
 | `maxImageSizeMb` | `number` | `10` | Наибольший допустимый размер файла изображения в мегабайтах. |
 | `maxLength` | `number` | `0` | Ограничение числа символов; `0` — без ограничений. |
@@ -312,6 +316,24 @@ function readDocx(data: ArrayBuffer | Uint8Array): Promise<DocxImport>;
 
 Читает файл `.docx` в HTML редактора и параметры страницы. Завершается ошибкой, если файл не является документом Word. Работает в браузере.
 
+### readPdf
+
+```ts
+function readPdf(data: ArrayBuffer | Uint8Array): Promise<PdfImport>;
+```
+
+Читает файл `.pdf` в HTML редактора и параметры страницы: абзацы, заголовки, списки, таблицы, изображения и колонтитулы восстанавливаются по раскладке страниц. Отсканированные страницы приходят как изображения. Завершается ошибкой `PdfImportError`, если файл не является PDF, зашифрован или не содержит ни текста, ни изображений. Модуль чтения загружается при первом вызове. Работает в браузере. См. [Открытие PDF](/docs/word-files#открытие-pdf).
+
+### PdfImportError
+
+```ts
+class PdfImportError extends Error {
+  readonly reason: PdfImportErrorReason;
+}
+```
+
+Ошибка `readPdf` и `importPdf()`; событие `importError` передаёт её без изменений. Проверяйте через `instanceof`; `reason` сообщает, почему файл не удалось открыть.
+
 ### compareDocuments
 
 ```ts
@@ -354,16 +376,15 @@ HTML оглавления: заголовок, затем по одной стр
 
 ## Константы
 
-### uz, uzCyrl, en, ru
+### uz, en, ru
 
 ```ts
 const uz: EditorLocale;
-const uzCyrl: EditorLocale;
 const en: EditorLocale;
 const ru: EditorLocale;
 ```
 
-Встроенные языки интерфейса: узбекский на латинице (по умолчанию) и кириллице, английский и русский.
+Встроенные языки интерфейса: узбекский (по умолчанию), английский и русский.
 
 ### editorLocales
 
@@ -548,6 +569,20 @@ interface DocxImport {
 }
 ```
 
+### PdfImport, PdfImportErrorReason
+
+```ts
+interface PdfImport {
+  /** Содержимое документа в виде HTML; редактор всё равно очищает его. */
+  html: string;
+  /** Размер бумаги, ориентация, поля и колонтитулы. */
+  page: PageSettings;
+}
+
+/** 'invalid': нечитаемый PDF; 'encrypted': файл зашифрован; 'empty': нет ни текста, ни изображений. */
+type PdfImportErrorReason = 'invalid' | 'encrypted' | 'empty';
+```
+
 ### OutlineHeading
 
 ```ts
@@ -716,7 +751,7 @@ interface DocumentTemplate {
 ### NumberWordsLocale, TransliterationDirection
 
 ```ts
-type NumberWordsLocale = 'uz' | 'uz-Cyrl' | 'ru' | 'en';
+type NumberWordsLocale = 'uz' | 'ru' | 'en';
 type TransliterationDirection = 'toCyrillic' | 'toLatin';
 ```
 
@@ -734,7 +769,7 @@ interface EditorLocale {
 ### EditorLocaleCode
 
 ```ts
-type EditorLocaleCode = 'uz' | 'uz-Cyrl' | 'en' | 'ru';
+type EditorLocaleCode = 'uz' | 'en' | 'ru';
 ```
 
 ### EditorLocaleInput

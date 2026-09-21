@@ -2,6 +2,21 @@
 
 nuvra’ning har bir versiyasidagi muhim o‘zgarishlar, eng yangisidan boshlab.
 
+## Chiqarilmagan
+
+### Tillar
+
+- **Moslik buziladi:** kirill yozuvidagi o‘zbek interfeysi olib tashlandi: `uzCyrl` locale’i hamda `EditorLocaleCode` va `NumberWordsLocale` dagi `'uz-Cyrl'` kodi endi yo‘q. Interfeys o‘zbek, ingliz va rus tillarida keladi; `transliterate` va hujjat matnini lotin / kirill yozuviga o‘girish saqlanib qoladi.
+
+### PDF import
+
+- “Yana” menyusidagi “PDF faylini ochish (.pdf)” va template ref’dagi `importPdf(file)` PDF’ni tahrirlanadigan hujjatga aylantiradi: paragraflar, sarlavhalar, ro‘yxatlar, jadvallar, rasmlar, kolontitullar va sahifa sozlamalari sahifalardagi joylashuvdan qayta tiklanadi. “Word faylini ochish (.docx)” ham PDF fayllarni qabul qiladi. Skanerlangan sahifalar rasm bo‘lib keladi. Fayl brauzerda o‘qiladi, o‘quvchi kod esa birinchi ishlatilganda yuklanadi. Batafsil: [PDF faylini ochish](/docs/word-files#pdf-faylini-ochish).
+- `readPdf` PDF’ni o‘z kodingizda o‘qiydi; ochib bo‘lmagan faylni `PdfImportError` (`reason`: `'invalid'`, `'encrypted'` yoki `'empty'`) bildiradi, `importError` hodisasi orqali ham.
+
+### Tuzatishlar
+
+- Veb ko‘rinish to‘liq ekranda ayrim oyna o‘lchamlari va masshtablarda scrollbar’lari chiqib-yo‘qolib, tinimsiz miltillab turardi; endi bunday bo‘lmaydi.
+
 ## 0.6.0
 
 ### Eksport va katta hujjatlar

@@ -1,11 +1,10 @@
 # Tillar
 
-Muharrir interfeysi — asboblar paneli, menyular, oynalar, holat paneli va xabarlar — o‘zbek (lotin va kirill), ingliz va rus tillarida tayyor. Tarjimalar paketning ichida, shuning uchun har bir ilova bir xil, tekshirilgan matnlarni ko‘rsatadi.
+Muharrir interfeysi — asboblar paneli, menyular, oynalar, holat paneli va xabarlar — o‘zbek, ingliz va rus tillarida tayyor. Tarjimalar paketning ichida, shuning uchun har bir ilova bir xil, tekshirilgan matnlarni ko‘rsatadi.
 
 | Locale | Kod | Til |
 | --- | --- | --- |
 | `uz` | `'uz'` | O‘zbekcha (standart) |
-| `uzCyrl` | `'uz-Cyrl'` | Ўзбекча |
 | `en` | `'en'` | English |
 | `ru` | `'ru'` | Русский |
 

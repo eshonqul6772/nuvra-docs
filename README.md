@@ -12,6 +12,7 @@ Built with Vue 3, Vite and vue-router. Docs articles are Markdown files compiled
 ```sh
 pnpm install
 pnpm dev          # http://localhost:5173
+pnpm dev:local    # the same, but against the sources of ../nuvra instead of the npm package
 pnpm build        # type-check and production build into dist/
 pnpm preview      # serve the production build
 pnpm biome        # lint and format check

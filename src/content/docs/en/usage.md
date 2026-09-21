@@ -280,6 +280,7 @@ const save = () => {
 | `insertVariable(name)` | Inserts a template variable at the selection. |
 | `updateTableOfContents()` | Inserts or refreshes the table of contents. |
 | `importWord(file)` | Replaces the document with the content of a `.docx` file. |
+| `importPdf(file)` | Replaces the document with the content of a `.pdf` file, as editable text. |
 | `print()` | Opens the browser print dialog for the document. |
 | `exportHtml()` | Downloads the document as a standalone HTML page. |
 | `exportWord()` | Downloads the document as a Word file (`.docx`). |

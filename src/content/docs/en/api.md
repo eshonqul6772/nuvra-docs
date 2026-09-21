@@ -12,6 +12,7 @@ import {
   DocumentEditor,
   DocumentForm,
   Editor,
+  PdfImportError,
   buildDocx,
   buildTableOfContents,
   collaboratorColor,
@@ -32,11 +33,11 @@ import {
   parseAmount,
   readDocx,
   readOutline,
+  readPdf,
   ru,
   setEditorLocale,
   transliterate,
   uz,
-  uzCyrl,
   type Collaborator,
   type DocumentComment,
   type DocumentCommentReply,
@@ -62,6 +63,8 @@ import {
   type PageSettings,
   type PageSizeKey,
   type PageWatermark,
+  type PdfImport,
+  type PdfImportErrorReason,
   type SelectionOffsets,
   type SlashCommand,
   type TableOfContentsEntry,
@@ -89,7 +92,7 @@ The full Word-style editor with toolbar, page or web view, status bar, find and 
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | View shown first; the user can switch it in the status bar. |
 | `disabled` | `boolean` | `false` | Makes the document read-only and disables every editing control. |
 | `height` | `number \| string` | `760` | Height of the whole editor, or `'auto'` to grow with the content between `minHeight` and `maxHeight`. |
-| `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `uzCyrl`, `en`, `ru` or their codes; defaults to the app-wide language. |
+| `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `en`, `ru` or their codes; defaults to the app-wide language. |
 | `maxHeight` | `number \| string` | `600` | Largest height of an auto-height editor; longer documents scroll inside it. |
 | `maxImageSizeMb` | `number` | `10` | Largest accepted image file, in megabytes. |
 | `maxLength` | `number` | `0` | Largest number of characters; `0` means unlimited. |
@@ -119,7 +122,7 @@ Numbers are pixels; strings are used as CSS lengths. Other attributes, such as `
 | `focus` | — | The editing surface received focus. |
 | `blur` | — | The editing surface lost focus; pending model updates have already been written. |
 | `uploadError` | `error: unknown` | An image was rejected by validation or its upload failed. |
-| `importError` | `error: unknown` | A Word file could not be read; the document is left unchanged. |
+| `importError` | `error: unknown` | A Word or PDF file could not be read; the document is left unchanged. PDF errors have a `reason`: `'invalid'`, `'encrypted'` or `'empty'`. |
 | `exportError` | `error: unknown` | **New in 0.6.0.** The PDF could not be drawn, for example because the browser does not allow it; no file is downloaded. |
 | `selectionChange` | `selection: SelectionOffsets \| null` | **New in 0.6.0.** The caret or selection moved; `null` when it left the document. Send it to the other people editing. |
 
@@ -140,6 +143,7 @@ Available through a template ref.
 | `insertVariable` | `(name: string) => void` | Inserts a template variable at the selection. |
 | `updateTableOfContents` | `() => Promise<void>` | Inserts a table of contents at the selection, or refreshes the existing one. |
 | `importWord` | `(file: File) => Promise<void>` | Replaces the document and the page setup with the content of a `.docx` file, as one undo step. Errors are emitted as `importError`. |
+| `importPdf` | `(file: File) => Promise<void>` | Replaces the document and the page setup with the content of a `.pdf` file, rebuilt as editable text, as one undo step. Scanned pages come in as pictures. Errors are emitted as `importError`. See [Opening a PDF](/docs/word-files#opening-a-pdf). |
 | `print` | `() => Promise<void>` | Opens the browser print dialog. |
 | `exportHtml` | `() => Promise<void>` | Downloads the document as an HTML page. |
 | `exportWord` | `() => Promise<void>` | Downloads the document as a Word file (`.docx`). |
@@ -157,7 +161,7 @@ A rich text field for forms: `DocumentEditor` in the web view with `height: 'aut
 | `autofocus` | `boolean` | `false` | Places the caret at the end of the content once the editor is ready. |
 | `canvasPadding` | `number \| string` | `50` | Gray space around the sheet. |
 | `disabled` | `boolean` | `false` | Makes the content read-only and disables the toolbar. |
-| `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `uzCyrl`, `en`, `ru` or their codes; defaults to the app-wide language. |
+| `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `en`, `ru` or their codes; defaults to the app-wide language. |
 | `maxHeight` | `number \| string` | `600` | Height at which the field stops growing and starts scrolling. |
 | `maxImageSizeMb` | `number` | `10` | Largest accepted image file, in megabytes. |
 | `maxLength` | `number` | `0` | Character limit; `0` means unlimited. |
@@ -312,6 +316,24 @@ function readDocx(data: ArrayBuffer | Uint8Array): Promise<DocxImport>;
 
 Reads a `.docx` file into editor HTML and page settings. Rejects when the file is not a Word document. Runs in the browser.
 
+### readPdf
+
+```ts
+function readPdf(data: ArrayBuffer | Uint8Array): Promise<PdfImport>;
+```
+
+Reads a `.pdf` file into editor HTML and page settings, rebuilding paragraphs, headings, lists, tables, pictures and the running header and footer from the layout of the pages. Scanned pages come in as their pictures. Rejects with a `PdfImportError` when the file is not a PDF, is encrypted or has neither text nor pictures. The reader loads on the first call. Runs in the browser. See [Opening a PDF](/docs/word-files#opening-a-pdf).
+
+### PdfImportError
+
+```ts
+class PdfImportError extends Error {
+  readonly reason: PdfImportErrorReason;
+}
+```
+
+The error of `readPdf` and of `importPdf()`, whose `importError` event passes it on. Check it with `instanceof`; `reason` tells why the file could not be opened.
+
 ### compareDocuments
 
 ```ts
@@ -354,16 +376,15 @@ HTML of a table of contents: the title, then one row per entry with its page num
 
 ## Constants
 
-### uz, uzCyrl, en, ru
+### uz, en, ru
 
 ```ts
 const uz: EditorLocale;
-const uzCyrl: EditorLocale;
 const en: EditorLocale;
 const ru: EditorLocale;
 ```
 
-The built-in interface languages: Uzbek in Latin (the default) and Cyrillic script, English and Russian.
+The built-in interface languages: Uzbek (the default), English and Russian.
 
 ### editorLocales
 
@@ -548,6 +569,20 @@ interface DocxImport {
 }
 ```
 
+### PdfImport, PdfImportErrorReason
+
+```ts
+interface PdfImport {
+  /** Document content as HTML; the editor's sanitiser still runs over it. */
+  html: string;
+  /** Paper size, orientation, margins and running header and footer of the document. */
+  page: PageSettings;
+}
+
+/** 'invalid': not a readable PDF; 'encrypted': the file is encrypted; 'empty': neither text nor pictures. */
+type PdfImportErrorReason = 'invalid' | 'encrypted' | 'empty';
+```
+
 ### OutlineHeading
 
 ```ts
@@ -716,7 +751,7 @@ interface DocumentTemplate {
 ### NumberWordsLocale, TransliterationDirection
 
 ```ts
-type NumberWordsLocale = 'uz' | 'uz-Cyrl' | 'ru' | 'en';
+type NumberWordsLocale = 'uz' | 'ru' | 'en';
 type TransliterationDirection = 'toCyrillic' | 'toLatin';
 ```
 
@@ -734,7 +769,7 @@ interface EditorLocale {
 ### EditorLocaleCode
 
 ```ts
-type EditorLocaleCode = 'uz' | 'uz-Cyrl' | 'en' | 'ru';
+type EditorLocaleCode = 'uz' | 'en' | 'ru';
 ```
 
 ### EditorLocaleInput

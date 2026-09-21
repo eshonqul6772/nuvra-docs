@@ -280,6 +280,7 @@ const save = () => {
 | `insertVariable(name)` | Belgilangan joyga shablon o‘zgaruvchisini qo‘shadi. |
 | `updateTableOfContents()` | Mundarijani qo‘shadi yoki yangilaydi. |
 | `importWord(file)` | Hujjatni `.docx` fayl mazmuni bilan almashtiradi. |
+| `importPdf(file)` | Hujjatni `.pdf` fayl mazmuni bilan, tahrirlanadigan matn sifatida almashtiradi. |
 | `print()` | Hujjat uchun brauzerning chop etish oynasini ochadi. |
 | `exportHtml()` | Hujjatni mustaqil HTML sahifa sifatida yuklab beradi. |
 | `exportWord()` | Hujjatni Word fayli (`.docx`) sifatida yuklab beradi. |

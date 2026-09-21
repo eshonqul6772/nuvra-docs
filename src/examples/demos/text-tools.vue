@@ -37,7 +37,7 @@ const insert = (text: string) => {
     <div class="example-bar">
       <span class="example-note">Language of the words:</span>
       <button
-        v-for="code in ['uz', 'uz-Cyrl', 'ru', 'en'] as const"
+        v-for="code in ['uz', 'ru', 'en'] as const"
         :key="code"
         type="button"
         class="example-button"

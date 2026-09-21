@@ -1,26 +1,23 @@
-import type { DocumentViewMode, EditorLocaleCode, TemplateVariable } from 'nuvra';
+import type { TemplateVariable } from 'nuvra';
 
-/** Height of `DocumentEditor` when the `height` prop is not set, in pixels. */
-export const DEFAULT_EDITOR_HEIGHT = 760;
+import type { PlaygroundOptions } from './playground-options';
 
-/** Props and bindings chosen in the playground. */
-export interface PlaygroundOptions {
-  defaultViewMode: DocumentViewMode;
-  /** Height in pixels, used while `autoHeight` is off. */
-  height: number;
-  autoHeight: boolean;
-  locale: EditorLocaleCode;
-  disabled: boolean;
-  ruler: boolean;
-  /** Character limit; `0` means unlimited. */
-  maxLength: number;
-  placeholder: string;
-  title: string;
-  author: string;
-  bindComments: boolean;
-  bindTrackChanges: boolean;
-  /** Sample variables, or `undefined` when none are passed. */
-  variables: readonly TemplateVariable[] | undefined;
+/** Defaults of `DocumentEditor`; props equal to them are left out of the snippet. */
+const EDITOR_DEFAULTS = {
+  height: 760,
+  minHeight: 240,
+  maxHeight: 600,
+  canvasPadding: 50,
+  maxImageSizeMb: 10
+} as const;
+
+/** Sample data the snippet writes out for the switches that pass it. */
+export interface PlaygroundSamples {
+  variables: readonly TemplateVariable[];
+  /** Label of the sample `/` command, which inserts today's date. */
+  slashCommandLabel: string;
+  /** Name of the sample collaborator. */
+  collaboratorName: string;
 }
 
 /** A static attribute with its value escaped for HTML. */
@@ -33,13 +30,13 @@ const literal = (value: string) => `'${value.replace(/\\/g, '\\\\').replace(/'/g
  * Single-file component that renders `DocumentEditor` with the chosen options. Props left at their defaults are
  * omitted, so the code stays as short as the choice allows.
  */
-export const buildPlaygroundSnippet = (options: PlaygroundOptions): string => {
-  const types = ['DocumentEditor'];
+export const buildPlaygroundSnippet = (options: PlaygroundOptions, samples: PlaygroundSamples): string => {
+  const imports = ['DocumentEditor'];
   const state = ["const html = ref('');"];
   const attributes = ['v-model="html"'];
 
   if (options.bindComments) {
-    types.push('type DocumentComment');
+    imports.push('type DocumentComment');
     state.push('const comments = ref<DocumentComment[]>([]);');
     attributes.push('v-model:comments="comments"');
   }
@@ -47,29 +44,102 @@ export const buildPlaygroundSnippet = (options: PlaygroundOptions): string => {
     state.push('const trackChanges = ref(false);');
     attributes.push('v-model:track-changes="trackChanges"');
   }
+  if (options.bindPage) {
+    imports.push('createPageSettings');
+    const overrides = [
+      options.pageSize !== 'a4' && `size: ${literal(options.pageSize)}`,
+      options.orientation !== 'portrait' && `orientation: ${literal(options.orientation)}`
+    ].filter(Boolean);
+    state.push(
+      overrides.length
+        ? `const page = ref({ ...createPageSettings(), ${overrides.join(', ')} });`
+        : 'const page = ref(createPageSettings());'
+    );
+    attributes.push('v-model:page="page"');
+  }
+
   if (options.defaultViewMode !== 'page') attributes.push(attribute('default-view-mode', options.defaultViewMode));
-  if (options.autoHeight) attributes.push('height="auto"');
-  else if (options.height !== DEFAULT_EDITOR_HEIGHT) attributes.push(`:height="${options.height}"`);
+  if (options.autoHeight) {
+    attributes.push('height="auto"');
+    if (options.minHeight !== EDITOR_DEFAULTS.minHeight) attributes.push(`:min-height="${options.minHeight}"`);
+    if (options.maxHeight !== EDITOR_DEFAULTS.maxHeight) attributes.push(`:max-height="${options.maxHeight}"`);
+  } else if (options.height !== EDITOR_DEFAULTS.height) {
+    attributes.push(`:height="${options.height}"`);
+  }
+  if (options.canvasPadding !== EDITOR_DEFAULTS.canvasPadding)
+    attributes.push(`:canvas-padding="${options.canvasPadding}"`);
   attributes.push(attribute('locale', options.locale));
   if (options.disabled) attributes.push('disabled');
+  if (options.autofocus) attributes.push('autofocus');
   if (!options.ruler) attributes.push(':ruler="false"');
   if (options.maxLength > 0) attributes.push(`:max-length="${options.maxLength}"`);
+  if (options.maxImageSizeMb !== EDITOR_DEFAULTS.maxImageSizeMb)
+    attributes.push(`:max-image-size-mb="${options.maxImageSizeMb}"`);
   if (options.placeholder) attributes.push(attribute('placeholder', options.placeholder));
   if (options.title) attributes.push(attribute('title', options.title));
   if (options.author) attributes.push(attribute('author', options.author));
+
+  if (options.toolbarLayout !== 'row') attributes.push(attribute('toolbar-layout', options.toolbarLayout));
+  if (options.tools) {
+    imports.push('type ToolbarTool');
+    state.push(`const tools: ToolbarTool[] = [${options.tools.map(literal).join(', ')}];`);
+    attributes.push(':tools="tools"');
+  }
   if (options.variables) {
-    types.push('type TemplateVariable');
-    const items = options.variables.map(
+    imports.push('type TemplateVariable');
+    const items = samples.variables.map(
       variable => `  { name: ${literal(variable.name)}, label: ${literal(variable.label)} }`
     );
     state.push(`const variables: TemplateVariable[] = [\n${items.join(',\n')}\n];`);
     attributes.push(':variables="variables"');
   }
+  if (options.slashCommands) {
+    imports.push('type SlashCommand');
+    state.push(
+      [
+        'const slashCommands: SlashCommand[] = [',
+        '  {',
+        "    id: 'today',",
+        `    label: ${literal(samples.slashCommandLabel)},`,
+        "    icon: 'calendar-days',",
+        '    run: engine => engine.insertText(new Date().toLocaleDateString())',
+        '  }',
+        '];'
+      ].join('\n')
+    );
+    attributes.push(':slash-commands="slashCommands"');
+  }
+  if (options.collaborators) {
+    imports.push('type Collaborator');
+    state.push(
+      [
+        'const collaborators = ref<Collaborator[]>([',
+        `  { id: 'guest', name: ${literal(samples.collaboratorName)}, selection: { anchor: 12, focus: 40 } }`,
+        ']);'
+      ].join('\n')
+    );
+    attributes.push(':collaborators="collaborators"');
+  }
+  if (options.uploadImage) {
+    imports.push('type DocumentImageUploadHandler');
+    state.push(
+      [
+        '// Send the file to your server and resolve with the URL it is stored at.',
+        'const uploadImage: DocumentImageUploadHandler = async file => {',
+        '  const body = new FormData();',
+        "  body.append('file', file);",
+        "  const response = await fetch('/api/uploads', { method: 'POST', body });",
+        '  return (await response.json()).url;',
+        '};'
+      ].join('\n')
+    );
+    attributes.push(':upload-image="uploadImage"');
+  }
 
   return [
     '<script setup lang="ts">',
     "import { ref } from 'vue';",
-    `import { ${types.join(', ')} } from 'nuvra';`,
+    `import { ${imports.join(', ')} } from 'nuvra';`,
     '',
     ...state,
     '</script>',

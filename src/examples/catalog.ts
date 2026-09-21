@@ -98,9 +98,9 @@ export const EXAMPLE_GROUPS: ExampleGroup[] = [
         art: 'globe',
         title: { en: 'Interface languages', uz: 'Interfeys tillari', ru: 'Языки интерфейса' },
         description: {
-          en: 'Uzbek (Latin and Cyrillic), Russian and English are built in; switch them on the fly.',
-          uz: 'O‘zbek (lotin va kirill), rus va ingliz tillari o‘rnatilgan; ularni darhol almashtiring.',
-          ru: 'Узбекский (латиница и кириллица), русский и английский встроены; переключайте на лету.'
+          en: 'Uzbek, Russian and English are built in; switch them on the fly.',
+          uz: 'O‘zbek, rus va ingliz tillari o‘rnatilgan; ularni darhol almashtiring.',
+          ru: 'Узбекский, русский и английский встроены; переключайте на лету.'
         },
         features: ['locale', 'editorLocales', 'setEditorLocale'],
         guide: 'translations'

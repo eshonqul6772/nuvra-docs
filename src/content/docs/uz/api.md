@@ -12,6 +12,7 @@ import {
   DocumentEditor,
   DocumentForm,
   Editor,
+  PdfImportError,
   buildDocx,
   buildTableOfContents,
   collaboratorColor,
@@ -32,11 +33,11 @@ import {
   parseAmount,
   readDocx,
   readOutline,
+  readPdf,
   ru,
   setEditorLocale,
   transliterate,
   uz,
-  uzCyrl,
   type Collaborator,
   type DocumentComment,
   type DocumentCommentReply,
@@ -62,6 +63,8 @@ import {
   type PageSettings,
   type PageSizeKey,
   type PageWatermark,
+  type PdfImport,
+  type PdfImportErrorReason,
   type SelectionOffsets,
   type SlashCommand,
   type TableOfContentsEntry,
@@ -89,7 +92,7 @@ Asboblar paneli, sahifa yoki veb ko‘rinishi, holat paneli, qidirish va almasht
 | `defaultViewMode` | `DocumentViewMode` | `'page'` | Birinchi ko‘rsatiladigan ko‘rinish; foydalanuvchi uni holat panelida almashtira oladi. |
 | `disabled` | `boolean` | `false` | Hujjatni faqat o‘qiladigan qiladi va barcha tahrirlash tugmalarini o‘chiradi. |
 | `height` | `number \| string` | `760` | Butun muharrir balandligi yoki `minHeight` va `maxHeight` oralig‘ida o‘sishi uchun `'auto'`. |
-| `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `uzCyrl`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |
+| `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |
 | `maxHeight` | `number \| string` | `600` | O‘suvchi muharrirning eng katta balandligi; uzun hujjatlar ichida aylantiriladi. |
 | `maxImageSizeMb` | `number` | `10` | Qabul qilinadigan rasm faylining eng katta hajmi, megabaytda. |
 | `maxLength` | `number` | `0` | Belgilarning eng ko‘p soni; `0` — cheklovsiz. |
@@ -119,7 +122,7 @@ Sonlar piksel hisoblanadi; satrlar CSS uzunligi sifatida ishlatiladi. Boshqa atr
 | `focus` | — | Tahrirlash maydoni fokus oldi. |
 | `blur` | — | Tahrirlash maydoni fokusni yo‘qotdi; kutilayotgan o‘zgarishlar modelga yozib bo‘lingan. |
 | `uploadError` | `error: unknown` | Rasm tekshiruvdan o‘tmadi yoki yuklanmadi. |
-| `importError` | `error: unknown` | Word faylini o‘qib bo‘lmadi; hujjat o‘zgarishsiz qoladi. |
+| `importError` | `error: unknown` | Word yoki PDF faylini o‘qib bo‘lmadi; hujjat o‘zgarishsiz qoladi. PDF xatolarida `reason` bor: `'invalid'`, `'encrypted'` yoki `'empty'`. |
 | `exportError` | `error: unknown` | **0.6.0 versiyada yangi.** PDF’ni chizib bo‘lmadi, masalan brauzer bunga ruxsat bermadi; fayl yuklanmaydi. |
 | `selectionChange` | `selection: SelectionOffsets \| null` | **0.6.0 versiyada yangi.** Kursor yoki belgilash joyi o‘zgardi; kursor hujjatdan chiqsa `null`. Uni tahrirlayotgan boshqa odamlarga yuboring. |
 
@@ -140,6 +143,7 @@ Template ref orqali mavjud.
 | `insertVariable` | `(name: string) => void` | Belgilangan joyga shablon o‘zgaruvchisini qo‘shadi. |
 | `updateTableOfContents` | `() => Promise<void>` | Belgilangan joyga mundarija qo‘shadi yoki mavjud mundarijani yangilaydi. |
 | `importWord` | `(file: File) => Promise<void>` | Hujjat va sahifa sozlamalarini `.docx` fayl mazmuni bilan bitta bekor qilinadigan qadamda almashtiradi. Xatolar `importError` bilan chiqadi. |
+| `importPdf` | `(file: File) => Promise<void>` | Hujjat va sahifa sozlamalarini `.pdf` fayl mazmuni bilan, tahrirlanadigan matn sifatida, bitta bekor qilinadigan qadamda almashtiradi. Skanerlangan sahifalar rasm bo‘lib keladi. Xatolar `importError` bilan chiqadi. Batafsil: [PDF faylini ochish](/docs/word-files#pdf-faylini-ochish). |
 | `print` | `() => Promise<void>` | Brauzerning chop etish oynasini ochadi. |
 | `exportHtml` | `() => Promise<void>` | Hujjatni HTML sahifa sifatida yuklab beradi. |
 | `exportWord` | `() => Promise<void>` | Hujjatni Word fayli (`.docx`) sifatida yuklab beradi. |
@@ -157,7 +161,7 @@ Formalar uchun matn maydoni: veb ko‘rinishdagi va `height: 'auto'` bo‘lgan `
 | `autofocus` | `boolean` | `false` | Muharrir tayyor bo‘lganda kursorni matn oxiriga qo‘yadi. |
 | `canvasPadding` | `number \| string` | `50` | Varaq atrofidagi kulrang bo‘shliq. |
 | `disabled` | `boolean` | `false` | Matnni faqat o‘qiladigan qiladi va asboblar panelini o‘chiradi. |
-| `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `uzCyrl`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |
+| `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |
 | `maxHeight` | `number \| string` | `600` | Maydon o‘sishdan to‘xtab, aylantirila boshlaydigan balandlik. |
 | `maxImageSizeMb` | `number` | `10` | Qabul qilinadigan rasm faylining eng katta hajmi, megabaytda. |
 | `maxLength` | `number` | `0` | Belgilar chegarasi; `0` — cheklovsiz. |
@@ -312,6 +316,24 @@ function readDocx(data: ArrayBuffer | Uint8Array): Promise<DocxImport>;
 
 `.docx` faylni muharrir HTML’i va sahifa sozlamalariga o‘qiydi. Fayl Word hujjati bo‘lmasa, xato bilan tugaydi. Brauzerda ishlaydi.
 
+### readPdf
+
+```ts
+function readPdf(data: ArrayBuffer | Uint8Array): Promise<PdfImport>;
+```
+
+`.pdf` faylni muharrir HTML’i va sahifa sozlamalariga o‘qiydi: paragraflar, sarlavhalar, ro‘yxatlar, jadvallar, rasmlar va kolontitullar sahifalardagi joylashuvdan qayta tiklanadi. Skanerlangan sahifalar rasm bo‘lib keladi. Fayl PDF bo‘lmasa, shifrlangan bo‘lsa yoki unda na matn, na rasm bo‘lsa, `PdfImportError` bilan tugaydi. O‘quvchi kod birinchi chaqiruvda yuklanadi. Brauzerda ishlaydi. Batafsil: [PDF faylini ochish](/docs/word-files#pdf-faylini-ochish).
+
+### PdfImportError
+
+```ts
+class PdfImportError extends Error {
+  readonly reason: PdfImportErrorReason;
+}
+```
+
+`readPdf` va `importPdf()` xatosi; `importError` hodisasi uni o‘zgarishsiz uzatadi. `instanceof` bilan tekshiriladi, `reason` faylni nega ochib bo‘lmaganini aytadi.
+
 ### compareDocuments
 
 ```ts
@@ -354,16 +376,15 @@ Mundarija HTML’i: sarlavha, so‘ng har bir band uchun bitta qator, sahifa raq
 
 ## Konstantalar
 
-### uz, uzCyrl, en, ru
+### uz, en, ru
 
 ```ts
 const uz: EditorLocale;
-const uzCyrl: EditorLocale;
 const en: EditorLocale;
 const ru: EditorLocale;
 ```
 
-O‘rnatilgan interfeys tillari: lotin (standart) va kirill yozuvidagi o‘zbek, ingliz va rus.
+O‘rnatilgan interfeys tillari: o‘zbek (standart), ingliz va rus.
 
 ### editorLocales
 
@@ -548,6 +569,20 @@ interface DocxImport {
 }
 ```
 
+### PdfImport, PdfImportErrorReason
+
+```ts
+interface PdfImport {
+  /** Hujjat mazmuni, HTML ko‘rinishida; muharrir uni baribir tozalab oladi. */
+  html: string;
+  /** Qog‘oz o‘lchami, yo‘nalishi, hoshiyalar va kolontitullar. */
+  page: PageSettings;
+}
+
+/** 'invalid': o‘qib bo‘lmaydigan PDF; 'encrypted': fayl shifrlangan; 'empty': na matn, na rasm bor. */
+type PdfImportErrorReason = 'invalid' | 'encrypted' | 'empty';
+```
+
 ### OutlineHeading
 
 ```ts
@@ -716,7 +751,7 @@ interface DocumentTemplate {
 ### NumberWordsLocale, TransliterationDirection
 
 ```ts
-type NumberWordsLocale = 'uz' | 'uz-Cyrl' | 'ru' | 'en';
+type NumberWordsLocale = 'uz' | 'ru' | 'en';
 type TransliterationDirection = 'toCyrillic' | 'toLatin';
 ```
 
@@ -734,7 +769,7 @@ interface EditorLocale {
 ### EditorLocaleCode
 
 ```ts
-type EditorLocaleCode = 'uz' | 'uz-Cyrl' | 'en' | 'ru';
+type EditorLocaleCode = 'uz' | 'en' | 'ru';
 ```
 
 ### EditorLocaleInput

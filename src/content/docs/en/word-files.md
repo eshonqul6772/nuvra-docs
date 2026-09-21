@@ -1,6 +1,6 @@
 # Word files and long documents
 
-This page covers opening and saving Word files, downloading a PDF, and the tools for long documents: footnotes, multilevel numbering, page numbering options, pages in different orientations, the table of contents and the navigation pane.
+This page covers opening and saving Word files, opening and downloading a PDF, and the tools for long documents: footnotes, multilevel numbering, page numbering options, pages in different orientations, the table of contents and the navigation pane.
 
 ## Word files (.docx)
 
@@ -83,6 +83,71 @@ const { html, page } = await readDocx(await file.arrayBuffer());
 | Headers and footers | Only their text is imported, split into the left, centre and right parts; formatting and images are dropped. |
 | Watermark, text boxes, shapes | Not imported. |
 | Fields | PAGE and NUMPAGES in headers and footers become `{page}` and `{pages}`; other fields keep the text they showed. |
+
+## Opening a PDF
+
+"Open PDF file (.pdf)" in the "More" menu picks a PDF and replaces the document with its content as editable text, which can then be saved as Word. "Open Word file (.docx)" accepts PDF files too. As with a Word file, the paper size, orientation, margins and the running header and footer come from the file, the current watermark stays, and the replacement is one undo step for the content.
+
+From code, call `importPdf(file)`. A file that cannot be read leaves the document unchanged and emits `importError`:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { DocumentEditor, PdfImportError } from 'nuvra';
+
+const html = ref('');
+const editor = ref<InstanceType<typeof DocumentEditor>>();
+
+const open = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) void editor.value?.importPdf(file);
+};
+
+const onImportError = (error: unknown) => {
+  // `reason` is 'invalid', 'encrypted' or 'empty'.
+  if (error instanceof PdfImportError) console.error(error.reason);
+};
+</script>
+
+<template>
+  <input type="file" accept=".pdf" @change="open" />
+  <DocumentEditor ref="editor" v-model="html" @import-error="onImportError" />
+</template>
+```
+
+A PDF stores positioned glyphs rather than paragraphs, so the structure is rebuilt from the layout:
+
+- paragraphs with their alignment, first-line indent and spacing; headings by font size;
+- bulleted and numbered lists;
+- tables from aligned columns, with borders when the PDF draws them and as borderless signature tables otherwise;
+- bold, italic, colour, font size and font;
+- lines repeated at the top and bottom of the pages become the header and footer, page numbers in them become `{page}` and `{pages}`;
+- pictures, embedded as data URLs (they do not go through `uploadImage`);
+- paper size and margins.
+
+Latin and Cyrillic text of embedded and standard fonts is read, Uzbek letters included.
+
+The file is read entirely in the browser: nothing is uploaded, the pages are not rendered, and the reader has no dependencies and loads only when the first PDF is opened. The browser gets control back after every page, so a long document does not freeze the page.
+
+`readPdf` returns the result without an editor:
+
+```ts
+import { readPdf } from 'nuvra';
+
+const { html, page } = await readPdf(await file.arrayBuffer());
+```
+
+### Limits
+
+| PDF content | What happens |
+| --- | --- |
+| Scanned pages | Come in as their pictures; reading their text would take OCR. |
+| Encrypted files | Not opened; `importError` with the reason `'encrypted'`. |
+| Not a PDF, or broken beyond repair | `importError` with the reason `'invalid'`. |
+| No text and no pictures | `importError` with the reason `'empty'`. |
+| Complex layouts | Several columns, text over pictures and unusual tables are rebuilt as well as the layout allows; check the result. |
+| Forms, annotations, links, bookmarks | Not imported. |
+| Vector drawings and charts | Not imported, except table borders. |
 
 ## Downloading a PDF
 

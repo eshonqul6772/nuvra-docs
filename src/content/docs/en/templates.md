@@ -139,7 +139,7 @@ import { formatAmountInWords, formatLongDate, numberToWords, parseAmount, transl
 numberToWords(2500, 'ru'); // 'две тысячи пятьсот'
 formatAmountInWords(1250.5, 'uz'); // '1 250,50 (bir ming ikki yuz ellik)'
 parseAmount('1 250,50'); // 1250.5
-formatLongDate(new Date(), 'uz-Cyrl'); // '2026 йил 14 сентябрь'
+formatLongDate(new Date(), 'uz'); // '2026-yil 14-sentabr'
 transliterate('O‘zbekiston', 'toCyrillic'); // 'Ўзбекистон'
 ```
 
