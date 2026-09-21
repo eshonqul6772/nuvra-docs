@@ -89,7 +89,7 @@ Asboblar paneli, sahifa yoki veb ko‘rinishi, holat paneli, qidirish va almasht
 | `autofocus` | `boolean` | `false` | Muharrir tayyor bo‘lishi bilan kursorni hujjat oxiriga qo‘yadi. |
 | `canvasPadding` | `number \| string` | `50` | Sahifa yoki veb varaq atrofidagi kulrang bo‘shliq. |
 | `collaborators` | `Collaborator[]` | `[]` | **0.6.0 versiyada yangi.** Hujjatni tahrirlayotgan boshqa odamlar; ularning kursorlari va belgilashlari hujjat ustida chiziladi. Batafsil: [Birgalikda tahrirlash](/docs/collaboration). |
-| `defaultViewMode` | `DocumentViewMode` | `'page'` | Birinchi ko‘rsatiladigan ko‘rinish; foydalanuvchi uni holat panelida almashtira oladi. |
+| `defaultViewMode` | `DocumentViewMode` | `'web'` | Birinchi ko‘rsatiladigan ko‘rinish; foydalanuvchi uni holat panelida almashtira oladi. |
 | `disabled` | `boolean` | `false` | Hujjatni faqat o‘qiladigan qiladi va barcha tahrirlash tugmalarini o‘chiradi. |
 | `height` | `number \| string` | `760` | Butun muharrir balandligi yoki `minHeight` va `maxHeight` oralig‘ida o‘sishi uchun `'auto'`. |
 | `locale` | `EditorLocaleInput` | — | Interfeys tili: `uz`, `en`, `ru` yoki ularning kodi; berilmasa ilova bo‘yicha til olinadi. |

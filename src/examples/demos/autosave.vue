@@ -56,6 +56,6 @@ onBeforeUnmount(() => clearTimeout(timer));
       <button type="button" class="example-button" @click="forget">Forget the saved copy</button>
     </div>
 
-    <DocumentEditor :tools="TOOLS" v-model="html" :height="460" />
+    <DocumentEditor default-view-mode="web" :tools="TOOLS" v-model="html" :height="460" />
   </div>
 </template>

@@ -26,7 +26,7 @@ const page = ref<PageSettings>(createPageSettings());
 </script>
 
 <template>
-  <DocumentEditor v-model="html" v-model:page="page" :height="560" title="Quarterly report" />
+  <DocumentEditor v-model="html" v-model:page="page" default-view-mode="page" :height="560" title="Quarterly report" />
 
   <details>
     <summary class="example-note">v-model — {{ html.length }} characters of HTML</summary>

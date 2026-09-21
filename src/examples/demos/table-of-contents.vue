@@ -53,7 +53,7 @@ watch(html, refreshOutline);
     </div>
 
     <div class="example-columns layout">
-      <DocumentEditor :tools="TOOLS" ref="editor" v-model="html" :height="560" />
+      <DocumentEditor default-view-mode="web" :tools="TOOLS" ref="editor" v-model="html" :height="560" />
       <nav class="example-panel">
         <h3>readOutline()</h3>
         <ul class="example-list">

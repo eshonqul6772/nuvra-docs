@@ -51,7 +51,7 @@ const author = ref(AUTHORS[0]);
       </label>
     </div>
 
-    <DocumentEditor
+    <DocumentEditor default-view-mode="web"
       :tools="TOOLS"
       v-model="html"
       v-model:comments="comments"

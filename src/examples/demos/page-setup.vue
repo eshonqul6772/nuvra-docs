@@ -77,6 +77,6 @@ const watermark = computed({
       </label>
     </div>
 
-    <DocumentEditor :tools="TOOLS" v-model="html" v-model:page="page" :height="560" title="Order No. 17" />
+    <DocumentEditor default-view-mode="web" :tools="TOOLS" v-model="html" v-model:page="page" :height="560" title="Order No. 17" />
   </div>
 </template>

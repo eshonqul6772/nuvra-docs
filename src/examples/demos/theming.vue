@@ -28,7 +28,7 @@ const accent = ref(ACCENTS[1]);
     </div>
 
     <div class="themed" :style="{ '--accent': accent }">
-      <DocumentEditor :tools="TOOLS" v-model="html" :height="420" />
+      <DocumentEditor default-view-mode="web" :tools="TOOLS" v-model="html" :height="420" />
     </div>
   </div>
 </template>

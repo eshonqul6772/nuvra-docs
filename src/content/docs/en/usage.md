@@ -117,11 +117,11 @@ The editor has two views, switched from the status bar:
 - **Page view** (`'page'`) shows separate sheets with the chosen paper size and margins, a page counter and zoom from 30% to 200% in steps of 10%. In narrow containers the page is zoomed out automatically until the user picks a zoom level.
 - **Web view** (`'web'`) shows one continuous sheet, like a web page.
 
-`defaultViewMode` chooses the view shown first. `DocumentEditor` starts in the page view; `Editor` always uses the web view.
+`defaultViewMode` chooses the view shown first. `DocumentEditor` starts in the full-width web view; pass `page` to show sheets on a grey canvas. `Editor` always uses the web view.
 
 ```vue
 <template>
-  <DocumentEditor v-model="html" default-view-mode="web" />
+  <DocumentEditor v-model="html" default-view-mode="page" />
 </template>
 ```
 

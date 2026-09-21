@@ -89,7 +89,7 @@ The full Word-style editor with toolbar, page or web view, status bar, find and 
 | `autofocus` | `boolean` | `false` | Places the caret at the end of the document as soon as the editor is ready. |
 | `canvasPadding` | `number \| string` | `50` | Gray space around the page or web sheet. |
 | `collaborators` | `Collaborator[]` | `[]` | **New in 0.6.0.** Other people editing the document; their carets and selections are drawn over it. See [Editing together](/docs/collaboration). |
-| `defaultViewMode` | `DocumentViewMode` | `'page'` | View shown first; the user can switch it in the status bar. |
+| `defaultViewMode` | `DocumentViewMode` | `'web'` | View shown first; the user can switch it in the status bar. |
 | `disabled` | `boolean` | `false` | Makes the document read-only and disables every editing control. |
 | `height` | `number \| string` | `760` | Height of the whole editor, or `'auto'` to grow with the content between `minHeight` and `maxHeight`. |
 | `locale` | `EditorLocaleInput` | — | Interface language: `uz`, `en`, `ru` or their codes; defaults to the app-wide language. |

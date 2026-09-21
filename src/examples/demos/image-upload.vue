@@ -26,7 +26,7 @@ const onUploadError = (reason: unknown) => {
 
 <template>
   <div class="example-stage">
-    <DocumentEditor
+    <DocumentEditor default-view-mode="web"
       :tools="TOOLS"
       v-model="html"
       :upload-image="uploadImage"

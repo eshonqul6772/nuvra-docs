@@ -117,11 +117,11 @@ Muharrirda ikki ko‘rinish bor, ular holat panelidan almashtiriladi:
 - **Sahifa ko‘rinishi** (`'page'`) tanlangan qog‘oz o‘lchami va hoshiyalar bilan alohida varaqlarni, sahifalar hisoblagichini va 30% dan 200% gacha 10% qadamli masshtabni ko‘rsatadi. Tor konteynerlarda foydalanuvchi masshtabni o‘zi tanlamaguncha sahifa avtomatik kichraytiriladi.
 - **Veb ko‘rinish** (`'web'`) veb-sahifadagidek bitta uzluksiz varaqni ko‘rsatadi.
 
-`defaultViewMode` birinchi ko‘rsatiladigan ko‘rinishni belgilaydi. `DocumentEditor` sahifa ko‘rinishida ochiladi, `Editor` esa doim veb ko‘rinishda ishlaydi.
+`defaultViewMode` birinchi ko‘rsatiladigan ko‘rinishni belgilaydi. `DocumentEditor` to‘liq kenglikdagi veb ko‘rinishda ochiladi; varaqlarni kulrang fonda ko‘rsatish uchun `page` bering. `Editor` esa doim veb ko‘rinishda ishlaydi.
 
 ```vue
 <template>
-  <DocumentEditor v-model="html" default-view-mode="web" />
+  <DocumentEditor v-model="html" default-view-mode="page" />
 </template>
 ```
 

@@ -38,6 +38,6 @@ const locale = ref<EditorLocaleCode>('uz');
     </div>
 
     <!-- For the whole app, call setEditorLocale(ru) once instead of passing the prop. -->
-    <DocumentEditor :tools="TOOLS" v-model="html" :locale="locale" :height="420" />
+    <DocumentEditor default-view-mode="web" :tools="TOOLS" v-model="html" :locale="locale" :height="420" />
   </div>
 </template>

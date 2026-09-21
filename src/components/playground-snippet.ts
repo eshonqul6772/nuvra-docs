@@ -58,7 +58,7 @@ export const buildPlaygroundSnippet = (options: PlaygroundOptions, samples: Play
     attributes.push('v-model:page="page"');
   }
 
-  if (options.defaultViewMode !== 'page') attributes.push(attribute('default-view-mode', options.defaultViewMode));
+  if (options.defaultViewMode !== 'web') attributes.push(attribute('default-view-mode', options.defaultViewMode));
   if (options.autoHeight) {
     attributes.push('height="auto"');
     if (options.minHeight !== EDITOR_DEFAULTS.minHeight) attributes.push(`:min-height="${options.minHeight}"`);

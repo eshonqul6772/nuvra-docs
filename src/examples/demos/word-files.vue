@@ -43,7 +43,7 @@ const openWord = async (event: Event) => {
     </div>
     <p v-if="message" class="example-error">{{ message }}</p>
 
-    <DocumentEditor
+    <DocumentEditor default-view-mode="web"
       :tools="TOOLS"
       ref="editor"
       v-model="html"

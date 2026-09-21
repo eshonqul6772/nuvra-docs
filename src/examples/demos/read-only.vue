@@ -22,6 +22,6 @@ const locked = ref(true);
       <span class="example-note">{{ locked ? 'Read-only' : 'Editable' }}</span>
     </div>
 
-    <DocumentEditor :tools="TOOLS" v-model="html" :disabled="locked" :height="420" />
+    <DocumentEditor default-view-mode="web" :tools="TOOLS" v-model="html" :disabled="locked" :height="420" />
   </div>
 </template>

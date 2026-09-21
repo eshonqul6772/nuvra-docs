@@ -86,7 +86,7 @@ export interface LocalizedDefaults {
 
 /** The playground as it opens: the editor's own defaults, except for a shorter height and the sample bindings. */
 export const createDefaultOptions = (localized: LocalizedDefaults): PlaygroundOptions => ({
-  defaultViewMode: 'page',
+  defaultViewMode: 'web',
   height: 640,
   autoHeight: false,
   minHeight: 240,

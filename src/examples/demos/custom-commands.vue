@@ -34,7 +34,7 @@ const slashCommands: SlashCommand[] = [
 </script>
 
 <template>
-  <DocumentEditor :tools="TOOLS" v-model="html" :slash-commands="slashCommands" :height="460">
+  <DocumentEditor default-view-mode="web" :tools="TOOLS" v-model="html" :slash-commands="slashCommands" :height="460">
     <!-- Buttons of your app, at the start of the toolbar's right-hand group. -->
     <template #toolbar="{ engine, disabled }">
       <button

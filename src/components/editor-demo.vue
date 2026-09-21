@@ -124,7 +124,7 @@ const fileName = computed(() => messages.value.demo.fileName);
       </div>
 
       <div v-if="tab === 'document'" class="demo__body demo__body--document">
-        <DocumentEditor v-model="documents[locale]" v-model:page="page" v-model:comments="comments[locale]" v-model:track-changes="trackChanges" :author="messages.demo.author" :height="640" :locale="editorLocale" :variables="variables" :title="fileName" />
+        <DocumentEditor v-model="documents[locale]" v-model:page="page" v-model:comments="comments[locale]" v-model:track-changes="trackChanges" :author="messages.demo.author" default-view-mode="page" :height="640" :locale="editorLocale" :variables="variables" :title="fileName" />
       </div>
 
       <form v-else class="demo__body demo__form" @submit.prevent>
